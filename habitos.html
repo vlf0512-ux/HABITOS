@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Missões · Hábitos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1218;
+    --bg-2:#131922;
+    --surface:#1b2330;
+    --surface-2:#232d3d;
+    --border:rgba(255,255,255,0.07);
+    --text:#eef1f6;
+    --text-dim:#8e97a8;
+    --text-dimmer:#5a6272;
+    --fire:#ff7a45;
+    --fire-soft:rgba(255,122,69,0.14);
+    --water:#3fc7d4;
+    --water-soft:rgba(63,199,212,0.14);
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(140% 100% at 50% -10%, #1a2130 0%, var(--bg) 55%);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    padding-bottom:48px;
+  }
+  ::selection{background:var(--fire-soft);}
+
+  .wrap{max-width:480px; margin:0 auto; padding:20px 18px 0;}
+
+  /* ---------- Header ---------- */
+  .top-date{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:.08em;
+    color:var(--text-dimmer);
+    text-transform:uppercase;
+  }
+  .day-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:52px;
+    line-height:.95;
+    letter-spacing:.02em;
+    margin:2px 0 14px;
+    background:linear-gradient(180deg, #ffffff 0%, #c9cfda 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .day-tabs{
+    display:flex; gap:6px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    margin-bottom:18px;
+    scrollbar-width:none;
+  }
+  .day-tabs::-webkit-scrollbar{display:none;}
+  .day-tab{
+    flex:0 0 auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; font-weight:500;
+    letter-spacing:.05em;
+    padding:9px 13px;
+    border-radius:999px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .day-tab.active{
+    background:linear-gradient(135deg, var(--fire), #ff9d6c);
+    color:#1a0f08;
+    border-color:transparent;
+    font-weight:700;
+  }
+  .day-tab.today:not(.active){
+    color:var(--fire);
+    border-color:rgba(255,122,69,0.35);
+  }
+
+  /* ---------- Hero: ring + streak ---------- */
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:18px;
+    margin-bottom:14px;
+  }
+  .ring-box{position:relative; width:88px; height:88px; flex:0 0 auto;}
+  .ring-box svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none; stroke:var(--surface-2); stroke-width:8;}
+  .ring-fg{fill:none; stroke:url(#ringGrad); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1);}
+  .ring-label{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring-frac{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:17px;}
+  .ring-sub{font-size:9px; color:var(--text-dimmer); letter-spacing:.05em; text-transform:uppercase; margin-top:1px;}
+
+  .hero-right{flex:1; min-width:0;}
+  .streak{
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px; font-weight:700;
+    color:var(--fire);
+    margin-bottom:6px;
+  }
+  .quote{
+    font-size:13.5px; line-height:1.45;
+    color:var(--text-dim);
+    font-style:italic;
+    border-left:2px solid var(--fire);
+    padding-left:10px;
+  }
+
+  /* ---------- Sections ---------- */
+  .section{margin-top:26px;}
+  .eyebrow{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; font-weight:700;
+    letter-spacing:.12em;
+    color:var(--text-dimmer);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .eyebrow .stat{color:var(--text-dim); font-weight:500; letter-spacing:.02em;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+  }
+
+  /* ---------- Missions ---------- */
+  .mission{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    transition:background .15s ease;
+  }
+  .mission:last-child{border-bottom:none;}
+  .mission:active{background:var(--surface-2);}
+  .checkbox{
+    width:24px; height:24px; border-radius:50%;
+    border:2px solid var(--text-dimmer);
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .2s cubic-bezier(.4,0,.2,1);
+    cursor:pointer;
+  }
+  .checkbox svg{width:13px; height:13px; opacity:0; transform:scale(.5); transition:all .2s ease;}
+  .mission.done .checkbox{background:linear-gradient(135deg, var(--fire), #ff9d6c); border-color:transparent;}
+  .mission.done .checkbox svg{opacity:1; transform:scale(1);}
+  .mission-text{flex:1; font-size:14.5px; font-weight:500; cursor:pointer; transition:color .2s ease;}
+  .mission.done .mission-text{color:var(--text-dimmer); text-decoration:line-through;}
+  .mission-del{
+    color:var(--text-dimmer); font-size:18px; line-height:1; padding:4px 6px; cursor:pointer; opacity:.6;
+  }
+  .mission-del:active{opacity:1; color:var(--fire);}
+
+  .add-row{
+    display:flex; gap:8px;
+    padding:12px 14px;
+  }
+  .add-row input{
+    flex:1; background:var(--surface-2); border:1px solid var(--border);
+    color:var(--text); border-radius:var(--radius-sm);
+    padding:11px 12px; font-size:14px; font-family:'Inter',sans-serif;
+    min-width:0;
+  }
+  .add-row input:focus{outline:none; border-color:var(--fire);}
+  .add-row button{
+    background:var(--surface-2); color:var(--text-dim);
+    border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:0 16px; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .empty-hint{padding:22px 16px; text-align:center; color:var(--text-dimmer); font-size:13px;}
+
+  /* ---------- Water ---------- */
+  .water-card{padding:18px 16px;}
+  .water-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+  .water-count{font-family:'JetBrains Mono', monospace; font-size:28px; font-weight:700;}
+  .water-count span{font-size:15px; color:var(--text-dimmer); font-weight:500;}
+  .water-liters{font-size:12.5px; color:var(--water); font-weight:600; margin-top:2px;}
+  .drops{display:flex; gap:7px; margin-bottom:16px;}
+  .drop{
+    flex:1; height:34px; border-radius:8px;
+    background:var(--surface-2); border:1px solid var(--border);
+    transition:all .25s cubic-bezier(.4,0,.2,1);
+  }
+  .drop.filled{background:linear-gradient(180deg, var(--water), #2a9aa6); border-color:transparent;}
+  .water-btns{display:flex; gap:10px;}
+  .wbtn{
+    flex:1; padding:13px; border-radius:var(--radius-sm); border:none;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:15px; cursor:pointer;
+    transition:transform .1s ease;
+  }
+  .wbtn:active{transform:scale(.96);}
+  .wbtn.plus{background:linear-gradient(135deg, var(--water), #2a9aa6); color:#04262b;}
+  .wbtn.minus{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border); flex:0 0 56px;}
+
+  /* ---------- Running ---------- */
+  .run-form{display:flex; gap:8px; padding:16px; border-bottom:1px solid var(--border);}
+  .run-form input{
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:11px 10px; font-size:14px; font-family:'JetBrains Mono', monospace;
+    width:0; flex:1; min-width:0;
+  }
+  .run-form input:focus{outline:none; border-color:var(--fire);}
+  .run-form input::placeholder{color:var(--text-dimmer); font-family:'Inter',sans-serif;}
+  .run-form button{
+    flex:0 0 auto; background:linear-gradient(135deg, var(--fire), #ff9d6c); color:#2a1206;
+    border:none; border-radius:var(--radius-sm); padding:0 16px; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .run-summary{
+    display:flex; justify-content:space-around; text-align:center;
+    padding:14px 10px; border-bottom:1px solid var(--border);
+  }
+  .run-summary div span{display:block; font-family:'JetBrains Mono', monospace; font-size:19px; font-weight:700;}
+  .run-summary div small{font-size:10.5px; color:var(--text-dimmer); letter-spacing:.06em; text-transform:uppercase;}
+  .run-item{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 16px; border-bottom:1px solid var(--border);
+  }
+  .run-item:last-child{border-bottom:none;}
+  .run-dot{width:7px; height:7px; border-radius:50%; background:var(--fire); flex:0 0 auto;}
+  .run-info{flex:1; font-size:13.5px;}
+  .run-info b{font-family:'JetBrains Mono', monospace; font-weight:700;}
+  .run-date{font-size:11.5px; color:var(--text-dimmer); font-family:'JetBrains Mono', monospace;}
+  .run-del{color:var(--text-dimmer); font-size:17px; padding:4px 6px; opacity:.6; cursor:pointer;}
+  .run-del:active{opacity:1; color:var(--fire);}
+
+  @media (min-width:480px){
+    .wrap{padding-top:32px;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7a45"/>
+      <stop offset="100%" stop-color="#ffb648"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <div class="top-date" id="topDate">— </div>
+  <div class="day-title" id="dayTitle">SEGUNDA</div>
+
+  <div class="day-tabs" id="dayTabs"></div>
+
+  <div class="hero">
+    <div class="ring-box">
+      <svg width="88" height="88" viewBox="0 0 88 88">
+        <circle class="ring-bg" cx="44" cy="44" r="38"></circle>
+        <circle class="ring-fg" id="ringFg" cx="44" cy="44" r="38" stroke-dasharray="238.76" stroke-dashoffset="238.76"></circle>
+      </svg>
+      <div class="ring-label">
+        <div class="ring-frac" id="ringFrac">0/0</div>
+        <div class="ring-sub">hoje</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="streak" id="streakBox">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2c1 3-2 4-2 7a4 4 0 108 0c2 2 3 5 3 7a9 9 0 11-18 0c0-4 3-6 5-10 1-2 3-3 4-4z" fill="#ff7a45"/></svg>
+        <span id="streakText">0 dias seguidos</span>
+      </div>
+      <div class="quote" id="quoteBox">Carregando...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="eyebrow"><span>Missões do dia</span><span class="stat" id="missionStat">0/0 completo</span></div>
+    <div class="card" id="missionCard"></div>
+  </div>
+
+  <div class="section">
+    <div class="eyebrow"><span>Água</span></div>
+    <div class="card water-card">
+      <div class="water-top">
+        <div>
+          <div class="water-count"><span id="waterCount">0</span><span>/8 copos</span></div>
+          <div class="water-liters" id="waterLiters">0.0 L hoje</div>
+        </div>
+      </div>
+      <div class="drops" id="dropsRow"></div>
+      <div class="water-btns">
+        <button class="wbtn minus" id="waterMinus">−</button>
+        <button class="wbtn plus" id="waterPlus">+ copo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="eyebrow"><span>Corrida</span></div>
+    <div class="card">
+      <div class="run-form">
+        <input type="number" step="0.1" min="0" id="runKm" placeholder="Km">
+        <input type="text" id="runPace" placeholder="Pace (5:30)">
+        <button id="runAdd">Salvar</button>
+      </div>
+      <div class="run-summary">
+        <div><span id="weekKm">0.0</span><small>Km na semana</small></div>
+        <div><span id="weekRuns">0</span><small>Corridas</small></div>
+        <div><span id="bestPace">—</span><small>Melhor pace</small></div>
+      </div>
+      <div id="runList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const DAYS = ['dom','seg','ter','qua','qui','sex','sab'];
+  const DAY_LABELS = {seg:'SEG',ter:'TER',qua:'QUA',qui:'QUI',sex:'SEX',sab:'SÁB',dom:'DOM'};
+  const DAY_FULL = {seg:'SEGUNDA',ter:'TERÇA',qua:'QUARTA',qui:'QUINTA',sex:'SEXTA',sab:'SÁBADO',dom:'DOMINGO'};
+  const ORDER = ['seg','ter','qua','qui','sex','sab','dom'];
+
+  const QUOTES = [
+    "Disciplina é escolher entre o que você quer agora e o que você quer mais.",
+    "Cada missão marcada é um tijolo na versão que você tá construindo.",
+    "Não precisa ser perfeito. Precisa ser consistente.",
+    "O corpo aguenta o que a mente decide.",
+    "Hoje é só mais um dia pra provar pra você mesmo que é sério.",
+    "Pequenos hábitos, repetidos, viram identidade.",
+    "Ninguém vê o treino de hoje. Todo mundo vai ver o resultado.",
+    "Você não precisa de motivação, precisa de rotina.",
+    "Constância vence intensidade.",
+    "Feito é melhor que perfeito. Marca a missão e segue o jogo."
+  ];
+
+  function todayISO(d){ d=d||new Date(); return d.toISOString().slice(0,10); }
+  function loadJSON(key, fallback){
+    try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch(e){ return fallback; }
+  }
+  function saveJSON(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+  }
+
+  // ---- Data ----
+  let templates = loadJSON('habits_templates', {
+    seg:['Corre','Fazer skincare'],
+    ter:['Estudar','Fazer skincare'],
+    qua:['Corre','Fazer skincare'],
+    qui:['Estudar','Fazer skincare'],
+    sex:['Corre','Fazer skincare'],
+    sab:['Descansar ativo','Fazer skincare'],
+    dom:['Planejar a semana','Fazer skincare']
+  });
+  let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
+  let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
+  let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
+
+  const now = new Date();
+  const realTodayKey = ORDER[(now.getDay()+6)%7]; // map JS Sunday=0 to our seg-first order
+  let selectedDay = realTodayKey;
+
+  // ---- Day tabs ----
+  const dayTabsEl = document.getElementById('dayTabs');
+  function renderTabs(){
+    dayTabsEl.innerHTML = '';
+    ORDER.forEach(d=>{
+      const el = document.createElement('div');
+      el.className = 'day-tab' + (d===selectedDay?' active':'') + (d===realTodayKey?' today':'');
+      el.textContent = DAY_LABELS[d];
+      el.onclick = ()=>{ selectedDay = d; renderAll(); };
+      dayTabsEl.appendChild(el);
+    });
+  }
+
+  // ---- Header ----
+  function renderHeader(){
+    document.getElementById('dayTitle').textContent = DAY_FULL[selectedDay];
+    const opts = {day:'2-digit', month:'long'};
+    document.getElementById('topDate').textContent = now.toLocaleDateString('pt-BR', opts);
+  }
+
+  // ---- Missions (for the currently selected weekday, completion tracked per real date) ----
+  // completions are stored keyed by the actual calendar date matching that weekday occurrence closest to today.
+  function dateKeyForSelectedDay(){
+    // if selected day is today, use today's date. Otherwise use a virtual key per-weekday-template (not date specific)
+    // so toggling missions for other days doesn't require picking a date; we track "this week's" instance.
+    const diff = (ORDER.indexOf(selectedDay) - ORDER.indexOf(realTodayKey));
+    const d = new Date(now);
+    d.setDate(d.getDate() + diff);
+    return todayISO(d);
+  }
+
+  function renderMissions(){
+    const list = templates[selectedDay] || [];
+    const key = dateKeyForSelectedDay();
+    const state = completions[key] || {};
+    const card = document.getElementById('missionCard');
+    card.innerHTML = '';
+
+    if(list.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-hint';
+      empty.textContent = 'Nenhuma missão ainda. Adicione uma abaixo.';
+      card.appendChild(empty);
+    }
+
+    list.forEach((text, idx)=>{
+      const done = !!state[idx];
+      const row = document.createElement('div');
+      row.className = 'mission' + (done?' done':'');
+      row.innerHTML = `
+        <div class="checkbox">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f08" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="mission-text">${text}</div>
+        <div class="mission-del">×</div>
+      `;
+      const toggle = ()=>{
+        if(!completions[key]) completions[key] = {};
+        completions[key][idx] = !completions[key][idx];
+        saveJSON('habits_completions', completions);
+        renderAll();
+      };
+      row.querySelector('.checkbox').onclick = toggle;
+      row.querySelector('.mission-text').onclick = toggle;
+      row.querySelector('.mission-del').onclick = (e)=>{
+        e.stopPropagation();
+        templates[selectedDay].splice(idx,1);
+        saveJSON('habits_templates', templates);
+        renderAll();
+      };
+      card.appendChild(row);
+    });
+
+    const addRow = document.createElement('div');
+    addRow.className = 'add-row';
+    addRow.innerHTML = `<input type="text" placeholder="Nova missão..." id="newMissionInput"><button id="newMissionBtn">+</button>`;
+    card.appendChild(addRow);
+    const input = addRow.querySelector('#newMissionInput');
+    const btn = addRow.querySelector('#newMissionBtn');
+    const addMission = ()=>{
+      const val = input.value.trim();
+      if(!val) return;
+      if(!templates[selectedDay]) templates[selectedDay] = [];
+      templates[selectedDay].push(val);
+      saveJSON('habits_templates', templates);
+      renderAll();
+    };
+    btn.onclick = addMission;
+    input.onkeydown = (e)=>{ if(e.key==='Enter') addMission(); };
+
+    // progress ring + stat
+    const total = list.length;
+    const doneCount = list.reduce((acc,_,i)=> acc + (state[i]?1:0), 0);
+    document.getElementById('missionStat').textContent = `${doneCount}/${total} completo`;
+    document.getElementById('ringFrac').textContent = `${doneCount}/${total}`;
+    const circumference = 238.76;
+    const pct = total>0 ? doneCount/total : 0;
+    document.getElementById('ringFg').style.strokeDashoffset = circumference * (1-pct);
+  }
+
+  // ---- Streak ----
+  function computeStreak(){
+    let streak = 0;
+    for(let i=0;i<60;i++){
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const wd = ORDER[(d.getDay()+6)%7];
+      const list = templates[wd] || [];
+      if(list.length === 0) break;
+      const key = todayISO(d);
+      const state = completions[key] || {};
+      const allDone = list.every((_,idx)=> !!state[idx]);
+      if(allDone) streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  function renderStreakAndQuote(){
+    const streak = computeStreak();
+    document.getElementById('streakText').textContent = `${streak} dia${streak===1?'':'s'} seguido${streak===1?'':'s'}`;
+    const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
+    document.getElementById('quoteBox').textContent = QUOTES[dayOfYear % QUOTES.length];
+  }
+
+  // ---- Water ----
+  function renderWater(){
+    const key = todayISO(now);
+    const count = water[key] || 0;
+    document.getElementById('waterCount').textContent = count;
+    document.getElementById('waterLiters').textContent = (count*0.25).toFixed(2).replace('.',',') + ' L hoje';
+    const row = document.getElementById('dropsRow');
+    row.innerHTML = '';
+    for(let i=0;i<8;i++){
+      const d = document.createElement('div');
+      d.className = 'drop' + (i<count?' filled':'');
+      row.appendChild(d);
+    }
+  }
+  document.getElementById('waterPlus').onclick = ()=>{
+    const key = todayISO(now);
+    water[key] = Math.min(12, (water[key]||0)+1);
+    saveJSON('habits_water', water);
+    renderWater();
+  };
+  document.getElementById('waterMinus').onclick = ()=>{
+    const key = todayISO(now);
+    water[key] = Math.max(0, (water[key]||0)-1);
+    saveJSON('habits_water', water);
+    renderWater();
+  };
+
+  // ---- Running ----
+  function renderRuns(){
+    const listEl = document.getElementById('runList');
+    listEl.innerHTML = '';
+    const sorted = [...runs].sort((a,b)=> new Date(b.date) - new Date(a.date));
+    if(sorted.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-hint';
+      empty.textContent = 'Nenhuma corrida registrada ainda.';
+      listEl.appendChild(empty);
+    }
+    sorted.slice(0,10).forEach(r=>{
+      const item = document.createElement('div');
+      item.className = 'run-item';
+      const d = new Date(r.date);
+      const dateStr = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'short'});
+      item.innerHTML = `
+        <div class="run-dot"></div>
+        <div class="run-info"><b>${r.km} km</b> · ${r.pace || '—'} /km<br><span class="run-date">${dateStr}</span></div>
+        <div class="run-del">×</div>
+      `;
+      item.querySelector('.run-del').onclick = ()=>{
+        runs = runs.filter(x=>x.id !== r.id);
+        saveJSON('habits_runs', runs);
+        renderRuns();
+      };
+      listEl.appendChild(item);
+    });
+
+    // week summary
+    const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
+    const weekRuns = runs.filter(r=> new Date(r.date) >= weekAgo);
+    const totalKm = weekRuns.reduce((a,r)=> a + parseFloat(r.km||0), 0);
+    document.getElementById('weekKm').textContent = totalKm.toFixed(1);
+    document.getElementById('weekRuns').textContent = weekRuns.length;
+    let best = null;
+    weekRuns.forEach(r=>{
+      if(!r.pace) return;
+      const parts = r.pace.split(':').map(Number);
+      if(parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return;
+      const secs = parts[0]*60+parts[1];
+      if(best === null || secs < best) best = secs;
+    });
+    document.getElementById('bestPace').textContent = best === null ? '—' : `${Math.floor(best/60)}:${String(best%60).padStart(2,'0')}`;
+  }
+
+  document.getElementById('runAdd').onclick = ()=>{
+    const km = document.getElementById('runKm').value;
+    const pace = document.getElementById('runPace').value.trim();
+    if(!km || parseFloat(km) <= 0) return;
+    runs.push({ id: Date.now().toString(), date: todayISO(now), km: parseFloat(km), pace });
+    saveJSON('habits_runs', runs);
+    document.getElementById('runKm').value = '';
+    document.getElementById('runPace').value = '';
+    renderRuns();
+  };
+
+  function renderAll(){
+    renderTabs();
+    renderHeader();
+    renderMissions();
+    renderStreakAndQuote();
+    renderWater();
+    renderRuns();
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Missões · Hábitos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,8 +35,8 @@
     --radius-sm:10px;
   }
 
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0; padding:0;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
+  html,body{margin:0; padding:0; overscroll-behavior-y:none;}
   body{
     background:
       radial-gradient(140% 100% at 50% -10%, #1a2130 0%, var(--bg) 55%);
@@ -343,6 +343,20 @@
 </div>
 
 <script>
+(function(){
+  // Belt-and-suspenders zoom lock for iOS: the viewport meta + touch-action
+  // handle most cases, but some iOS versions still zoom on fast double-tap
+  // or pinch. Block those explicitly.
+  document.addEventListener('gesturestart', e => e.preventDefault());
+  document.addEventListener('gesturechange', e => e.preventDefault());
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e){
+    const now = Date.now();
+    if(now - lastTouchEnd <= 350){ e.preventDefault(); }
+    lastTouchEnd = now;
+  }, { passive:false });
+})();
+
 (function(){
   const DAYS = ['dom','seg','ter','qua','qui','sex','sab'];
   const DAY_LABELS = {seg:'SEG',ter:'TER',qua:'QUA',qui:'QUI',sex:'SEX',sab:'SÁB',dom:'DOM'};

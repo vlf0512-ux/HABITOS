@@ -7,6 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hábitos">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<meta name="theme-color" content="#0e1218">
 <style>
   :root{
     --bg:#0e1218;
@@ -34,11 +43,11 @@
     color:var(--text);
     font-family:'Inter', sans-serif;
     min-height:100vh;
-    padding-bottom:48px;
+    padding-bottom:calc(48px + env(safe-area-inset-bottom));
   }
   ::selection{background:var(--fire-soft);}
 
-  .wrap{max-width:480px; margin:0 auto; padding:20px 18px 0;}
+  .wrap{max-width:480px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 18px 0;}
 
   /* ---------- Header ---------- */
   .top-date{

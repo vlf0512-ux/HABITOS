@@ -252,6 +252,7 @@
     .wrap{padding-top:32px;}
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -339,6 +340,53 @@
   const DAY_FULL = {seg:'SEGUNDA',ter:'TERÇA',qua:'QUARTA',qui:'QUINTA',sex:'SEXTA',sab:'SÁBADO',dom:'DOMINGO'};
   const ORDER = ['seg','ter','qua','qui','sex','sab','dom'];
 
+  // ---- Cloud sync (Supabase) ----
+  const SUPABASE_URL = 'https://jftalwbhacrjvgpwyrdz.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_QWuyac7OVi0qXQRXtKjzZQ_Kuv4zM3d';
+  const sb = (window.supabase && SUPABASE_URL.startsWith('http'))
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
+
+  let syncTimer = null;
+  let syncIndicator = null;
+  function flagSyncing(state){
+    if(!syncIndicator){
+      syncIndicator = document.createElement('div');
+      syncIndicator.style.cssText = 'position:fixed;top:10px;right:14px;font-family:JetBrains Mono, monospace;font-size:10px;letter-spacing:.05em;color:#5a6272;z-index:99;transition:opacity .3s ease;opacity:0;';
+      document.body.appendChild(syncIndicator);
+    }
+    if(state === 'saving'){ syncIndicator.textContent = 'salvando...'; syncIndicator.style.opacity='1'; }
+    else if(state === 'saved'){ syncIndicator.textContent = 'salvo na nuvem'; setTimeout(()=>{ syncIndicator.style.opacity='0'; }, 1200); }
+    else if(state === 'error'){ syncIndicator.textContent = 'offline · salvo só no aparelho'; syncIndicator.style.opacity='1'; setTimeout(()=>{ syncIndicator.style.opacity='0'; }, 2500); }
+  }
+
+  function pushToCloud(){
+    if(!sb) return;
+    clearTimeout(syncTimer);
+    flagSyncing('saving');
+    syncTimer = setTimeout(async ()=>{
+      try{
+        const payload = { templates, completions, water, runs };
+        const { error } = await sb.from('habitos_data').upsert({ id:'main', data:payload, updated_at:new Date().toISOString() });
+        if(error) throw error;
+        flagSyncing('saved');
+      }catch(e){
+        flagSyncing('error');
+      }
+    }, 500);
+  }
+
+  async function pullFromCloud(){
+    if(!sb) return null;
+    try{
+      const { data, error } = await sb.from('habitos_data').select('data').eq('id','main').single();
+      if(error) throw error;
+      return data ? data.data : null;
+    }catch(e){
+      return null;
+    }
+  }
+
   const QUOTES = [
     "Disciplina é escolher entre o que você quer agora e o que você quer mais.",
     "Cada missão marcada é um tijolo na versão que você tá construindo.",
@@ -362,7 +410,7 @@
   }
 
   // ---- Data ----
-  let templates = loadJSON('habits_templates', {
+  const DEFAULT_TEMPLATES = {
     seg:['Corre','Fazer skincare'],
     ter:['Estudar','Fazer skincare'],
     qua:['Corre','Fazer skincare'],
@@ -370,10 +418,22 @@
     sex:['Corre','Fazer skincare'],
     sab:['Descansar ativo','Fazer skincare'],
     dom:['Planejar a semana','Fazer skincare']
-  });
+  };
+  let templates = loadJSON('habits_templates', DEFAULT_TEMPLATES);
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
+
+  function saveAllLocal(){
+    saveJSON('habits_templates', templates);
+    saveJSON('habits_completions', completions);
+    saveJSON('habits_water', water);
+    saveJSON('habits_runs', runs);
+  }
+  function persist(){
+    saveAllLocal();
+    pushToCloud();
+  }
 
   const now = new Date();
   const realTodayKey = ORDER[(now.getDay()+6)%7]; // map JS Sunday=0 to our seg-first order
@@ -438,7 +498,7 @@
       const toggle = ()=>{
         if(!completions[key]) completions[key] = {};
         completions[key][idx] = !completions[key][idx];
-        saveJSON('habits_completions', completions);
+        persist();
         renderAll();
       };
       row.querySelector('.checkbox').onclick = toggle;
@@ -446,7 +506,7 @@
       row.querySelector('.mission-del').onclick = (e)=>{
         e.stopPropagation();
         templates[selectedDay].splice(idx,1);
-        saveJSON('habits_templates', templates);
+        persist();
         renderAll();
       };
       card.appendChild(row);
@@ -463,7 +523,7 @@
       if(!val) return;
       if(!templates[selectedDay]) templates[selectedDay] = [];
       templates[selectedDay].push(val);
-      saveJSON('habits_templates', templates);
+      persist();
       renderAll();
     };
     btn.onclick = addMission;
@@ -521,13 +581,13 @@
   document.getElementById('waterPlus').onclick = ()=>{
     const key = todayISO(now);
     water[key] = Math.min(12, (water[key]||0)+1);
-    saveJSON('habits_water', water);
+    persist();
     renderWater();
   };
   document.getElementById('waterMinus').onclick = ()=>{
     const key = todayISO(now);
     water[key] = Math.max(0, (water[key]||0)-1);
-    saveJSON('habits_water', water);
+    persist();
     renderWater();
   };
 
@@ -554,7 +614,7 @@
       `;
       item.querySelector('.run-del').onclick = ()=>{
         runs = runs.filter(x=>x.id !== r.id);
-        saveJSON('habits_runs', runs);
+        persist();
         renderRuns();
       };
       listEl.appendChild(item);
@@ -582,7 +642,7 @@
     const pace = document.getElementById('runPace').value.trim();
     if(!km || parseFloat(km) <= 0) return;
     runs.push({ id: Date.now().toString(), date: todayISO(now), km: parseFloat(km), pace });
-    saveJSON('habits_runs', runs);
+    persist();
     document.getElementById('runKm').value = '';
     document.getElementById('runPace').value = '';
     renderRuns();
@@ -597,7 +657,23 @@
     renderRuns();
   }
 
-  renderAll();
+  renderAll(); // render local cache instantly so the UI never feels blank
+
+  // then reconcile with the cloud copy, if reachable
+  (async ()=>{
+    const cloud = await pullFromCloud();
+    if(cloud){
+      templates = cloud.templates || DEFAULT_TEMPLATES;
+      completions = cloud.completions || {};
+      water = cloud.water || {};
+      runs = cloud.runs || [];
+      saveAllLocal();
+      renderAll();
+    }else{
+      // no cloud row reachable yet (offline, or first run) — push whatever we have locally
+      pushToCloud();
+    }
+  })();
 })();
 </script>
 </body>

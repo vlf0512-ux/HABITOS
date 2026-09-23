@@ -15,21 +15,21 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<meta name="theme-color" content="#0e1218">
+<meta name="theme-color" content="#0d0f14">
 <style>
   :root{
-    --bg:#0e1218;
-    --bg-2:#131922;
-    --surface:#1b2330;
-    --surface-2:#232d3d;
+    --bg:#0d0f14;
+    --bg-2:#12151b;
+    --surface:#181b23;
+    --surface-2:#20242e;
     --border:rgba(255,255,255,0.07);
-    --text:#eef1f6;
-    --text-dim:#8e97a8;
-    --text-dimmer:#5a6272;
-    --fire:#ff7a45;
-    --fire-soft:rgba(255,122,69,0.14);
-    --water:#3fc7d4;
-    --water-soft:rgba(63,199,212,0.14);
+    --text:#eef0f4;
+    --text-dim:#8b93a3;
+    --text-dimmer:#565d6c;
+    --fire:#a855f7;
+    --fire-soft:rgba(168,85,247,0.15);
+    --water:#7c3aed;
+    --water-soft:rgba(124,58,237,0.15);
     --radius-lg:20px;
     --radius-md:14px;
     --radius-sm:10px;
@@ -39,7 +39,7 @@
   html,body{margin:0; padding:0; overscroll-behavior-y:none;}
   body{
     background:
-      radial-gradient(140% 100% at 50% -10%, #1a2130 0%, var(--bg) 55%);
+      radial-gradient(140% 100% at 50% -10%, #1b1826 0%, var(--bg) 55%);
     color:var(--text);
     font-family:'Inter', sans-serif;
     min-height:100vh;
@@ -90,8 +90,8 @@
     transition:all .2s ease;
   }
   .day-tab.active{
-    background:linear-gradient(135deg, var(--fire), #ff9d6c);
-    color:#1a0f08;
+    background:linear-gradient(135deg, var(--fire), #c084fc);
+    color:#1a0f2e;
     border-color:transparent;
     font-weight:700;
   }
@@ -156,7 +156,9 @@
     border:1px solid var(--border);
     border-radius:var(--radius-lg);
     overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px -12px rgba(0,0,0,0.5);
   }
+  .eyebrow .ic{margin-right:6px; opacity:.9;}
 
   /* ---------- Missions ---------- */
   .mission{
@@ -176,7 +178,7 @@
     cursor:pointer;
   }
   .checkbox svg{width:13px; height:13px; opacity:0; transform:scale(.5); transition:all .2s ease;}
-  .mission.done .checkbox{background:linear-gradient(135deg, var(--fire), #ff9d6c); border-color:transparent;}
+  .mission.done .checkbox{background:linear-gradient(135deg, var(--fire), #c084fc); border-color:transparent;}
   .mission.done .checkbox svg{opacity:1; transform:scale(1);}
   .mission-text{flex:1; font-size:14.5px; font-weight:500; cursor:pointer; transition:color .2s ease;}
   .mission.done .mission-text{color:var(--text-dimmer); text-decoration:line-through;}
@@ -215,7 +217,7 @@
     background:var(--surface-2); border:1px solid var(--border);
     transition:all .25s cubic-bezier(.4,0,.2,1);
   }
-  .drop.filled{background:linear-gradient(180deg, var(--water), #2a9aa6); border-color:transparent;}
+  .drop.filled{background:linear-gradient(180deg, var(--water), #4c1d95); border-color:transparent;}
   .water-btns{display:flex; gap:10px;}
   .wbtn{
     flex:1; padding:13px; border-radius:var(--radius-sm); border:none;
@@ -223,7 +225,7 @@
     transition:transform .1s ease;
   }
   .wbtn:active{transform:scale(.96);}
-  .wbtn.plus{background:linear-gradient(135deg, var(--water), #2a9aa6); color:#04262b;}
+  .wbtn.plus{background:linear-gradient(135deg, var(--water), #4c1d95); color:#f5f0ff;}
   .wbtn.minus{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border); flex:0 0 56px;}
 
   /* ---------- Running ---------- */
@@ -236,7 +238,7 @@
   .run-form input:focus{outline:none; border-color:var(--fire);}
   .run-form input::placeholder{color:var(--text-dimmer); font-family:'Inter',sans-serif;}
   .run-form button{
-    flex:0 0 auto; background:linear-gradient(135deg, var(--fire), #ff9d6c); color:#2a1206;
+    flex:0 0 auto; background:linear-gradient(135deg, var(--fire), #c084fc); color:#1f0a33;
     border:none; border-radius:var(--radius-sm); padding:0 16px; font-weight:700; font-size:14px; cursor:pointer;
   }
   .run-summary{
@@ -257,6 +259,41 @@
   .run-del{color:var(--text-dimmer); font-size:17px; padding:4px 6px; opacity:.6; cursor:pointer;}
   .run-del:active{opacity:1; color:var(--fire);}
 
+  /* ---------- Treino ---------- */
+  .exercise{
+    display:flex; align-items:center; gap:10px;
+    padding:13px 16px;
+    border-bottom:1px solid var(--border);
+  }
+  .exercise:last-child{border-bottom:none;}
+  .exercise-main{flex:1; min-width:0;}
+  .exercise-name{font-size:14.5px; font-weight:600;}
+  .exercise.done .exercise-name{color:var(--text-dimmer); text-decoration:line-through;}
+  .exercise-meta{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text-dimmer); margin-top:2px;}
+  .exercise-weight{
+    width:58px; flex:0 0 auto;
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:8px 6px; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .exercise-weight:focus{outline:none; border-color:var(--fire);}
+  .exercise-del{color:var(--text-dimmer); font-size:17px; padding:2px 4px; opacity:.6; cursor:pointer;}
+  .exercise-del:active{opacity:1; color:var(--fire);}
+  .add-exercise{padding:12px 14px; display:flex; flex-direction:column; gap:8px;}
+  .add-exercise .row1{display:flex; gap:8px;}
+  .add-exercise input{
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:10px 11px; font-size:13.5px; font-family:'Inter',sans-serif;
+    min-width:0;
+  }
+  .add-exercise input:focus{outline:none; border-color:var(--fire);}
+  .add-exercise .name-input{flex:1;}
+  .add-exercise .num-input{width:56px; font-family:'JetBrains Mono', monospace; text-align:center;}
+  .add-exercise button{
+    background:linear-gradient(135deg, var(--fire), #c084fc); color:#1f0a33;
+    border:none; border-radius:var(--radius-sm); padding:10px; font-weight:700; font-size:13.5px; cursor:pointer;
+  }
+
   @media (min-width:480px){
     .wrap{padding-top:32px;}
   }
@@ -268,8 +305,8 @@
 <svg width="0" height="0">
   <defs>
     <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ff7a45"/>
-      <stop offset="100%" stop-color="#ffb648"/>
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#c084fc"/>
     </linearGradient>
   </defs>
 </svg>
@@ -294,7 +331,7 @@
     </div>
     <div class="hero-right">
       <div class="streak" id="streakBox">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2c1 3-2 4-2 7a4 4 0 108 0c2 2 3 5 3 7a9 9 0 11-18 0c0-4 3-6 5-10 1-2 3-3 4-4z" fill="#ff7a45"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2c1 3-2 4-2 7a4 4 0 108 0c2 2 3 5 3 7a9 9 0 11-18 0c0-4 3-6 5-10 1-2 3-3 4-4z" fill="#a855f7"/></svg>
         <span id="streakText">0 dias seguidos</span>
       </div>
       <div class="quote" id="quoteBox">Carregando...</div>
@@ -338,6 +375,10 @@
       </div>
       <div id="runList"></div>
     </div>
+  </div>
+  <div class="section">
+    <div class="eyebrow"><span>Treino</span><span class="stat" id="trainStat">0/0 feito</span></div>
+    <div class="card" id="trainCard"></div>
   </div>
 
 </div>
@@ -389,7 +430,7 @@
     flagSyncing('saving');
     syncTimer = setTimeout(async ()=>{
       try{
-        const payload = { templates, completions, water, runs };
+        const payload = { templates, completions, water, runs, trainTemplates, trainLogs };
         const { error } = await sb.from('habitos_data').upsert({ id:'main', data:payload, updated_at:new Date().toISOString() });
         if(error) throw error;
         flagSyncing('saved');
@@ -446,12 +487,16 @@
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
+  let trainTemplates = loadJSON('habits_train_templates', {seg:[],ter:[],qua:[],qui:[],sex:[],sab:[],dom:[]}); // { seg: [{id,name,sets,reps}] }
+  let trainLogs = loadJSON('habits_train_logs', {}); // { "2026-07-27": { "<exId>": {done:true, weight:40} } }
 
   function saveAllLocal(){
     saveJSON('habits_templates', templates);
     saveJSON('habits_completions', completions);
     saveJSON('habits_water', water);
     saveJSON('habits_runs', runs);
+    saveJSON('habits_train_templates', trainTemplates);
+    saveJSON('habits_train_logs', trainLogs);
   }
   function persist(){
     saveAllLocal();
@@ -513,7 +558,7 @@
       row.className = 'mission' + (done?' done':'');
       row.innerHTML = `
         <div class="checkbox">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f08" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="mission-text">${text}</div>
         <div class="mission-del">×</div>
@@ -671,6 +716,88 @@
     renderRuns();
   };
 
+  // ---- Treino ----
+  function renderTrain(){
+    const key = dateKeyForSelectedDay();
+    const list = trainTemplates[selectedDay] || [];
+    const log = trainLogs[key] || {};
+    const card = document.getElementById('trainCard');
+    card.innerHTML = '';
+
+    if(list.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-hint';
+      empty.textContent = 'Sem exercícios pra esse dia. Monta sua ficha abaixo.';
+      card.appendChild(empty);
+    }
+
+    list.forEach(ex=>{
+      const entry = log[ex.id] || {};
+      const row = document.createElement('div');
+      row.className = 'exercise' + (entry.done ? ' done' : '');
+      row.innerHTML = `
+        <div class="checkbox">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="exercise-main">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-meta">${ex.sets}x${ex.reps}</div>
+        </div>
+        <input class="exercise-weight" type="number" step="0.5" min="0" placeholder="kg" value="${entry.weight ?? ''}">
+        <div class="exercise-del">×</div>
+      `;
+      const cb = row.querySelector('.checkbox');
+      cb.style.cursor = 'pointer';
+      cb.onclick = ()=>{
+        if(!trainLogs[key]) trainLogs[key] = {};
+        if(!trainLogs[key][ex.id]) trainLogs[key][ex.id] = {};
+        trainLogs[key][ex.id].done = !trainLogs[key][ex.id].done;
+        persist();
+        renderTrain();
+      };
+      const weightInput = row.querySelector('.exercise-weight');
+      weightInput.onchange = ()=>{
+        if(!trainLogs[key]) trainLogs[key] = {};
+        if(!trainLogs[key][ex.id]) trainLogs[key][ex.id] = {};
+        const v = parseFloat(weightInput.value);
+        trainLogs[key][ex.id].weight = isNaN(v) ? undefined : v;
+        persist();
+      };
+      row.querySelector('.exercise-del').onclick = ()=>{
+        trainTemplates[selectedDay] = trainTemplates[selectedDay].filter(x=>x.id !== ex.id);
+        persist();
+        renderTrain();
+      };
+      card.appendChild(row);
+    });
+
+    const addBox = document.createElement('div');
+    addBox.className = 'add-exercise';
+    addBox.innerHTML = `
+      <div class="row1">
+        <input type="text" class="name-input" id="newExName" placeholder="Exercício (ex: Supino reto)">
+        <input type="number" class="num-input" id="newExSets" placeholder="Séries" min="1">
+        <input type="number" class="num-input" id="newExReps" placeholder="Reps" min="1">
+      </div>
+      <button id="newExBtn">+ adicionar exercício</button>
+    `;
+    card.appendChild(addBox);
+    document.getElementById('newExBtn').onclick = ()=>{
+      const name = document.getElementById('newExName').value.trim();
+      const sets = document.getElementById('newExSets').value || '3';
+      const reps = document.getElementById('newExReps').value || '10';
+      if(!name) return;
+      if(!trainTemplates[selectedDay]) trainTemplates[selectedDay] = [];
+      trainTemplates[selectedDay].push({ id: Date.now().toString(), name, sets, reps });
+      persist();
+      renderTrain();
+    };
+
+    const total = list.length;
+    const doneCount = list.reduce((acc,ex)=> acc + ((log[ex.id]&&log[ex.id].done)?1:0), 0);
+    document.getElementById('trainStat').textContent = `${doneCount}/${total} feito`;
+  }
+
   function renderAll(){
     renderTabs();
     renderHeader();
@@ -678,6 +805,7 @@
     renderStreakAndQuote();
     renderWater();
     renderRuns();
+    renderTrain();
   }
 
   renderAll(); // render local cache instantly so the UI never feels blank
@@ -690,6 +818,8 @@
       completions = cloud.completions || {};
       water = cloud.water || {};
       runs = cloud.runs || [];
+      trainTemplates = cloud.trainTemplates || {seg:[],ter:[],qua:[],qui:[],sex:[],sab:[],dom:[]};
+      trainLogs = cloud.trainLogs || {};
       saveAllLocal();
       renderAll();
     }else{

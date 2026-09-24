@@ -293,6 +293,18 @@
     background:linear-gradient(135deg, var(--fire), #c084fc); color:#1f0a33;
     border:none; border-radius:var(--radius-sm); padding:10px; font-weight:700; font-size:13.5px; cursor:pointer;
   }
+  .workout-tabs{display:flex; gap:8px; padding:14px 16px 2px;}
+  .workout-tab{
+    flex:1; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+    padding:10px 0; border-radius:var(--radius-sm);
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim);
+    cursor:pointer; transition:all .2s ease;
+  }
+  .workout-tab.active{
+    background:linear-gradient(135deg, var(--fire), #c084fc);
+    color:#1f0a33; border-color:transparent;
+  }
 
   @media (min-width:480px){
     .wrap{padding-top:32px;}
@@ -487,8 +499,9 @@
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
-  let trainTemplates = loadJSON('habits_train_templates', {seg:[],ter:[],qua:[],qui:[],sex:[],sab:[],dom:[]}); // { seg: [{id,name,sets,reps}] }
-  let trainLogs = loadJSON('habits_train_logs', {}); // { "2026-07-27": { "<exId>": {done:true, weight:40} } }
+  let trainTemplates = loadJSON('habits_train_templates', {A:[],B:[],C:[]}); // { A: [{id,name,sets,reps}], B:[...], C:[...] }
+  let trainLogs = loadJSON('habits_train_logs', {}); // { "2026-07-27": { "A": { "<exId>": {done:true, weight:40} } } }
+  let selectedWorkout = loadJSON('habits_selected_workout', 'A');
 
   function saveAllLocal(){
     saveJSON('habits_templates', templates);
@@ -718,16 +731,29 @@
 
   // ---- Treino ----
   function renderTrain(){
-    const key = dateKeyForSelectedDay();
-    const list = trainTemplates[selectedDay] || [];
-    const log = trainLogs[key] || {};
+    const todayKey = todayISO(now);
+    if(!trainLogs[todayKey]) trainLogs[todayKey] = {};
+    if(!trainLogs[todayKey][selectedWorkout]) trainLogs[todayKey][selectedWorkout] = {};
+    const list = trainTemplates[selectedWorkout] || [];
+    const log = trainLogs[todayKey][selectedWorkout];
     const card = document.getElementById('trainCard');
     card.innerHTML = '';
+
+    const tabs = document.createElement('div');
+    tabs.className = 'workout-tabs';
+    ['A','B','C'].forEach(w=>{
+      const t = document.createElement('div');
+      t.className = 'workout-tab' + (w===selectedWorkout?' active':'');
+      t.textContent = 'Treino ' + w;
+      t.onclick = ()=>{ selectedWorkout = w; saveJSON('habits_selected_workout', selectedWorkout); renderTrain(); };
+      tabs.appendChild(t);
+    });
+    card.appendChild(tabs);
 
     if(list.length === 0){
       const empty = document.createElement('div');
       empty.className = 'empty-hint';
-      empty.textContent = 'Sem exercícios pra esse dia. Monta sua ficha abaixo.';
+      empty.textContent = `Ficha ${selectedWorkout} ainda vazia. Monta ela abaixo.`;
       card.appendChild(empty);
     }
 
@@ -749,22 +775,20 @@
       const cb = row.querySelector('.checkbox');
       cb.style.cursor = 'pointer';
       cb.onclick = ()=>{
-        if(!trainLogs[key]) trainLogs[key] = {};
-        if(!trainLogs[key][ex.id]) trainLogs[key][ex.id] = {};
-        trainLogs[key][ex.id].done = !trainLogs[key][ex.id].done;
+        if(!log[ex.id]) log[ex.id] = {};
+        log[ex.id].done = !log[ex.id].done;
         persist();
         renderTrain();
       };
       const weightInput = row.querySelector('.exercise-weight');
       weightInput.onchange = ()=>{
-        if(!trainLogs[key]) trainLogs[key] = {};
-        if(!trainLogs[key][ex.id]) trainLogs[key][ex.id] = {};
+        if(!log[ex.id]) log[ex.id] = {};
         const v = parseFloat(weightInput.value);
-        trainLogs[key][ex.id].weight = isNaN(v) ? undefined : v;
+        log[ex.id].weight = isNaN(v) ? undefined : v;
         persist();
       };
       row.querySelector('.exercise-del').onclick = ()=>{
-        trainTemplates[selectedDay] = trainTemplates[selectedDay].filter(x=>x.id !== ex.id);
+        trainTemplates[selectedWorkout] = trainTemplates[selectedWorkout].filter(x=>x.id !== ex.id);
         persist();
         renderTrain();
       };
@@ -779,7 +803,7 @@
         <input type="number" class="num-input" id="newExSets" placeholder="Séries" min="1">
         <input type="number" class="num-input" id="newExReps" placeholder="Reps" min="1">
       </div>
-      <button id="newExBtn">+ adicionar exercício</button>
+      <button id="newExBtn">+ adicionar à ficha ${selectedWorkout}</button>
     `;
     card.appendChild(addBox);
     document.getElementById('newExBtn').onclick = ()=>{
@@ -787,8 +811,8 @@
       const sets = document.getElementById('newExSets').value || '3';
       const reps = document.getElementById('newExReps').value || '10';
       if(!name) return;
-      if(!trainTemplates[selectedDay]) trainTemplates[selectedDay] = [];
-      trainTemplates[selectedDay].push({ id: Date.now().toString(), name, sets, reps });
+      if(!trainTemplates[selectedWorkout]) trainTemplates[selectedWorkout] = [];
+      trainTemplates[selectedWorkout].push({ id: Date.now().toString(), name, sets, reps });
       persist();
       renderTrain();
     };
@@ -818,7 +842,7 @@
       completions = cloud.completions || {};
       water = cloud.water || {};
       runs = cloud.runs || [];
-      trainTemplates = cloud.trainTemplates || {seg:[],ter:[],qua:[],qui:[],sex:[],sab:[],dom:[]};
+      trainTemplates = cloud.trainTemplates || {A:[],B:[],C:[]};
       trainLogs = cloud.trainLogs || {};
       saveAllLocal();
       renderAll();

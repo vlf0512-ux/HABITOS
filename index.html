@@ -34,7 +34,7 @@
     --radius-md:14px;
     --radius-sm:10px;
   }
-
+ 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
   html,body{margin:0; padding:0; overscroll-behavior-y:none;}
   body{
@@ -46,9 +46,9 @@
     padding-bottom:calc(48px + env(safe-area-inset-bottom));
   }
   ::selection{background:var(--fire-soft);}
-
+ 
   .wrap{max-width:480px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 18px 0;}
-
+ 
   /* ---------- Header ---------- */
   .top-date{
     font-family:'JetBrains Mono', monospace;
@@ -67,7 +67,7 @@
     background-clip:text;
     color:transparent;
   }
-
+ 
   .day-tabs{
     display:flex; gap:6px;
     overflow-x:auto;
@@ -99,7 +99,7 @@
     color:var(--fire);
     border-color:rgba(255,122,69,0.35);
   }
-
+ 
   /* ---------- Hero: ring + streak ---------- */
   .hero{
     display:flex;
@@ -121,7 +121,7 @@
   }
   .ring-frac{font-family:'JetBrains Mono', monospace; font-weight:700; font-size:17px;}
   .ring-sub{font-size:9px; color:var(--text-dimmer); letter-spacing:.05em; text-transform:uppercase; margin-top:1px;}
-
+ 
   .hero-right{flex:1; min-width:0;}
   .streak{
     display:flex; align-items:center; gap:6px;
@@ -137,7 +137,7 @@
     border-left:2px solid var(--fire);
     padding-left:10px;
   }
-
+ 
   /* ---------- Sections ---------- */
   .section{margin-top:26px;}
   .eyebrow{
@@ -150,7 +150,7 @@
     margin-bottom:10px;
   }
   .eyebrow .stat{color:var(--text-dim); font-weight:500; letter-spacing:.02em;}
-
+ 
   .card{
     background:var(--surface);
     border:1px solid var(--border);
@@ -159,7 +159,7 @@
     box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px -12px rgba(0,0,0,0.5);
   }
   .eyebrow .ic{margin-right:6px; opacity:.9;}
-
+ 
   /* ---------- Missions ---------- */
   .mission{
     display:flex; align-items:center; gap:12px;
@@ -186,7 +186,7 @@
     color:var(--text-dimmer); font-size:18px; line-height:1; padding:4px 6px; cursor:pointer; opacity:.6;
   }
   .mission-del:active{opacity:1; color:var(--fire);}
-
+ 
   .add-row{
     display:flex; gap:8px;
     padding:12px 14px;
@@ -204,7 +204,7 @@
     padding:0 16px; font-size:14px; font-weight:600; cursor:pointer;
   }
   .empty-hint{padding:22px 16px; text-align:center; color:var(--text-dimmer); font-size:13px;}
-
+ 
   /* ---------- Water ---------- */
   .water-card{padding:18px 16px;}
   .water-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
@@ -227,7 +227,7 @@
   .wbtn:active{transform:scale(.96);}
   .wbtn.plus{background:linear-gradient(135deg, var(--water), #4c1d95); color:#f5f0ff;}
   .wbtn.minus{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border); flex:0 0 56px;}
-
+ 
   /* ---------- Running ---------- */
   .run-form{display:flex; gap:8px; padding:16px; border-bottom:1px solid var(--border);}
   .run-form input{
@@ -258,27 +258,50 @@
   .run-date{font-size:11.5px; color:var(--text-dimmer); font-family:'JetBrains Mono', monospace;}
   .run-del{color:var(--text-dimmer); font-size:17px; padding:4px 6px; opacity:.6; cursor:pointer;}
   .run-del:active{opacity:1; color:var(--fire);}
-
+ 
   /* ---------- Treino ---------- */
-  .exercise{
-    display:flex; align-items:center; gap:10px;
-    padding:13px 16px;
-    border-bottom:1px solid var(--border);
+  .exercise-card{
+    margin:10px 14px; padding:13px 14px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
   }
-  .exercise:last-child{border-bottom:none;}
-  .exercise-main{flex:1; min-width:0;}
-  .exercise-name{font-size:14.5px; font-weight:600;}
-  .exercise.done .exercise-name{color:var(--text-dimmer); text-decoration:line-through;}
-  .exercise-meta{font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text-dimmer); margin-top:2px;}
-  .exercise-weight{
-    width:58px; flex:0 0 auto;
-    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-    border-radius:var(--radius-sm); padding:8px 6px; text-align:center;
+  .exercise-card-head{display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:11px;}
+  .exercise-name{font-size:14.5px; font-weight:700;}
+  .exercise-card.done .exercise-name{color:var(--text-dim);}
+  .exercise-meta{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dimmer); margin-top:2px;}
+  .exercise-trash{color:var(--text-dimmer); font-size:16px; padding:3px 5px; opacity:.7; cursor:pointer; flex:0 0 auto;}
+  .exercise-trash:active{opacity:1; color:#f87171;}
+  .set-row{display:flex; align-items:center; gap:9px; padding:5px 0;}
+  .set-label{width:56px; flex:0 0 auto; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dimmer); text-transform:uppercase; letter-spacing:.04em;}
+  .set-weight{
+    flex:1; min-width:0;
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:8px 9px; text-align:center;
     font-family:'JetBrains Mono', monospace; font-size:13px;
   }
-  .exercise-weight:focus{outline:none; border-color:var(--fire);}
-  .exercise-del{color:var(--text-dimmer); font-size:17px; padding:2px 4px; opacity:.6; cursor:pointer;}
-  .exercise-del:active{opacity:1; color:var(--fire);}
+  .set-weight:focus{outline:none; border-color:var(--fire);}
+  .set-check{
+    width:28px; height:28px; flex:0 0 auto; border-radius:8px;
+    border:2px solid var(--text-dimmer);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition:all .2s cubic-bezier(.4,0,.2,1);
+  }
+  .set-check svg{width:12px; height:12px; opacity:0; transform:scale(.5); transition:all .2s ease;}
+  .set-check.done{background:linear-gradient(135deg, var(--fire), #c084fc); border-color:transparent;}
+  .set-check.done svg{opacity:1; transform:scale(1);}
+  .exercise-progress{height:4px; border-radius:2px; background:var(--surface); overflow:hidden; margin-top:10px;}
+  .exercise-progress-fill{height:100%; background:linear-gradient(90deg, var(--fire), #c084fc); transition:width .3s ease;}
+ 
+  .confirm-overlay{
+    position:fixed; inset:0; background:rgba(6,5,10,0.7); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; z-index:200; padding:28px;
+  }
+  .confirm-box{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; max-width:320px; width:100%;}
+  .confirm-box p{font-size:14px; color:var(--text); margin:0 0 16px; line-height:1.4;}
+  .confirm-actions{display:flex; gap:10px;}
+  .confirm-btn{flex:1; padding:11px; border-radius:var(--radius-sm); border:none; font-weight:700; font-size:13.5px; cursor:pointer; font-family:'Inter',sans-serif;}
+  .confirm-btn.cancel{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border);}
+  .confirm-btn.danger{background:#dc2626; color:#fff;}
+ 
   .add-exercise{padding:12px 14px; display:flex; flex-direction:column; gap:8px;}
   .add-exercise .row1{display:flex; gap:8px;}
   .add-exercise input{
@@ -305,15 +328,60 @@
     background:linear-gradient(135deg, var(--fire), #c084fc);
     color:#1f0a33; border-color:transparent;
   }
-
+ 
   @media (min-width:480px){
     .wrap{padding-top:32px;}
   }
+ 
+  /* ---------- Auth ---------- */
+  #authScreen{
+    position:fixed; inset:0; z-index:300;
+    background:radial-gradient(140% 100% at 50% -10%, #1b1826 0%, var(--bg) 55%);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .auth-box{max-width:340px; width:100%; text-align:center;}
+  .auth-title{
+    font-family:'Bebas Neue', sans-serif; font-size:42px; letter-spacing:.02em;
+    background:linear-gradient(180deg, #ffffff 0%, #c9cfda 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:6px;
+  }
+  .auth-sub{font-size:13px; color:var(--text-dim); margin-bottom:24px; line-height:1.5;}
+  .auth-box input{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:13px 14px; font-size:14.5px; font-family:'Inter',sans-serif;
+    margin-bottom:10px; text-align:center;
+  }
+  .auth-box input:focus{outline:none; border-color:var(--fire);}
+  .auth-box button{
+    width:100%; background:linear-gradient(135deg, var(--fire), #c084fc); color:#1f0a33;
+    border:none; border-radius:var(--radius-sm); padding:13px; font-weight:700; font-size:14.5px; cursor:pointer;
+  }
+  .auth-box button:disabled{opacity:.6;}
+  .auth-msg{margin-top:14px; font-size:12.5px; color:var(--text-dim); min-height:16px;}
+  .user-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dimmer);
+    margin-bottom:10px;
+  }
+  .user-bar .logout{color:var(--fire); cursor:pointer; text-decoration:underline;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
+ 
+<div id="authScreen" style="display:none;">
+  <div class="auth-box">
+    <div class="auth-title">HÁBITOS</div>
+    <div class="auth-sub">Entra com seu e-mail pra sincronizar suas missões, água, corridas e treinos.</div>
+    <input type="email" id="authEmail" placeholder="seu@email.com" autocomplete="email">
+    <button id="authBtn">Enviar link de acesso</button>
+    <div class="auth-msg" id="authMsg"></div>
+  </div>
+</div>
+ 
+<div id="appRoot" style="display:none;">
+ 
 <svg width="0" height="0">
   <defs>
     <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -322,14 +390,19 @@
     </linearGradient>
   </defs>
 </svg>
-
+ 
 <div class="wrap">
-
+ 
+  <div class="user-bar" id="userBar" style="display:none;">
+    <span id="userEmail"></span>
+    <span class="logout" id="logoutBtn">sair</span>
+  </div>
+ 
   <div class="top-date" id="topDate">— </div>
   <div class="day-title" id="dayTitle">SEGUNDA</div>
-
+ 
   <div class="day-tabs" id="dayTabs"></div>
-
+ 
   <div class="hero">
     <div class="ring-box">
       <svg width="88" height="88" viewBox="0 0 88 88">
@@ -349,12 +422,12 @@
       <div class="quote" id="quoteBox">Carregando...</div>
     </div>
   </div>
-
+ 
   <div class="section">
     <div class="eyebrow"><span>Missões do dia</span><span class="stat" id="missionStat">0/0 completo</span></div>
     <div class="card" id="missionCard"></div>
   </div>
-
+ 
   <div class="section">
     <div class="eyebrow"><span>Água</span></div>
     <div class="card water-card">
@@ -371,7 +444,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div class="section">
     <div class="eyebrow"><span>Corrida</span></div>
     <div class="card">
@@ -392,9 +465,10 @@
     <div class="eyebrow"><span>Treino</span><span class="stat" id="trainStat">0/0 feito</span></div>
     <div class="card" id="trainCard"></div>
   </div>
-
+ 
 </div>
-
+</div>
+ 
 <script>
 (function(){
   // Belt-and-suspenders zoom lock for iOS: the viewport meta + touch-action
@@ -409,20 +483,79 @@
     lastTouchEnd = now;
   }, { passive:false });
 })();
-
+ 
 (function(){
   const DAYS = ['dom','seg','ter','qua','qui','sex','sab'];
   const DAY_LABELS = {seg:'SEG',ter:'TER',qua:'QUA',qui:'QUI',sex:'SEX',sab:'SÁB',dom:'DOM'};
   const DAY_FULL = {seg:'SEGUNDA',ter:'TERÇA',qua:'QUARTA',qui:'QUINTA',sex:'SEXTA',sab:'SÁBADO',dom:'DOMINGO'};
   const ORDER = ['seg','ter','qua','qui','sex','sab','dom'];
-
+ 
   // ---- Cloud sync (Supabase) ----
   const SUPABASE_URL = 'https://jftalwbhacrjvgpwyrdz.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_QWuyac7OVi0qXQRXtKjzZQ_Kuv4zM3d';
   const sb = (window.supabase && SUPABASE_URL.startsWith('http'))
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
     : null;
-
+ 
+  let currentUserId = null;
+ 
+  function showAuthScreen(msg){
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('appRoot').style.display = 'none';
+    if(msg) document.getElementById('authMsg').textContent = msg;
+  }
+ 
+  function showApp(user){
+    currentUserId = user.id;
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('appRoot').style.display = 'block';
+    document.getElementById('userBar').style.display = 'flex';
+    document.getElementById('userEmail').textContent = user.email || '';
+    startApp();
+  }
+ 
+  async function initAuth(){
+    if(!sb){
+      // no supabase configured — fall back to local-only single-device mode
+      currentUserId = 'local';
+      document.getElementById('appRoot').style.display = 'block';
+      startApp();
+      return;
+    }
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session && session.user){
+      showApp(session.user);
+    }else{
+      showAuthScreen();
+    }
+    sb.auth.onAuthStateChange((event, session)=>{
+      if(event === 'SIGNED_IN' && session && session.user && !currentUserId){
+        showApp(session.user);
+      }
+      if(event === 'SIGNED_OUT'){
+        currentUserId = null;
+        location.reload();
+      }
+    });
+  }
+ 
+  document.getElementById('authBtn').onclick = async ()=>{
+    if(!sb) return;
+    const emailInput = document.getElementById('authEmail');
+    const email = emailInput.value.trim();
+    const btn = document.getElementById('authBtn');
+    const msg = document.getElementById('authMsg');
+    if(!email || !email.includes('@')){ msg.textContent = 'Digita um e-mail válido.'; return; }
+    btn.disabled = true; btn.textContent = 'Enviando...';
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.origin + window.location.pathname } });
+    btn.disabled = false; btn.textContent = 'Enviar link de acesso';
+    msg.textContent = error ? 'Erro ao enviar. Tenta de novo.' : `Link enviado pra ${email}. Confere sua caixa de entrada.`;
+  };
+ 
+  document.getElementById('logoutBtn').onclick = ()=>{
+    if(sb) sb.auth.signOut();
+  };
+ 
   let syncTimer = null;
   let syncIndicator = null;
   function flagSyncing(state){
@@ -435,7 +568,7 @@
     else if(state === 'saved'){ syncIndicator.textContent = 'salvo na nuvem'; setTimeout(()=>{ syncIndicator.style.opacity='0'; }, 1200); }
     else if(state === 'error'){ syncIndicator.textContent = 'offline · salvo só no aparelho'; syncIndicator.style.opacity='1'; setTimeout(()=>{ syncIndicator.style.opacity='0'; }, 2500); }
   }
-
+ 
   function pushToCloud(){
     if(!sb) return;
     clearTimeout(syncTimer);
@@ -443,7 +576,7 @@
     syncTimer = setTimeout(async ()=>{
       try{
         const payload = { templates, completions, water, runs, trainTemplates, trainLogs };
-        const { error } = await sb.from('habitos_data').upsert({ id:'main', data:payload, updated_at:new Date().toISOString() });
+        const { error } = await sb.from('habitos_data').upsert({ id: currentUserId, data:payload, updated_at:new Date().toISOString() });
         if(error) throw error;
         flagSyncing('saved');
       }catch(e){
@@ -451,18 +584,18 @@
       }
     }, 500);
   }
-
+ 
   async function pullFromCloud(){
     if(!sb) return null;
     try{
-      const { data, error } = await sb.from('habitos_data').select('data').eq('id','main').single();
+      const { data, error } = await sb.from('habitos_data').select('data').eq('id', currentUserId).single();
       if(error) throw error;
       return data ? data.data : null;
     }catch(e){
       return null;
     }
   }
-
+ 
   const QUOTES = [
     "Disciplina é escolher entre o que você quer agora e o que você quer mais.",
     "Cada missão marcada é um tijolo na versão que você tá construindo.",
@@ -475,7 +608,7 @@
     "Constância vence intensidade.",
     "Feito é melhor que perfeito. Marca a missão e segue o jogo."
   ];
-
+ 
   function todayISO(d){ d=d||new Date(); return d.toISOString().slice(0,10); }
   function loadJSON(key, fallback){
     try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
@@ -484,7 +617,7 @@
   function saveJSON(key, val){
     try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
   }
-
+ 
   // ---- Data ----
   const DEFAULT_TEMPLATES = {
     seg:['Corre','Fazer skincare'],
@@ -499,10 +632,10 @@
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
-  let trainTemplates = loadJSON('habits_train_templates', {A:[],B:[],C:[]}); // { A: [{id,name,sets,reps}], B:[...], C:[...] }
+  let trainTemplates = loadJSON('habits_train_templates', {A:[],B:[],C:[],D:[]}); // { A: [{id,name,sets,reps}], B:[...], C:[...], D:[...] }
   let trainLogs = loadJSON('habits_train_logs', {}); // { "2026-07-27": { "A": { "<exId>": {done:true, weight:40} } } }
   let selectedWorkout = loadJSON('habits_selected_workout', 'A');
-
+ 
   function saveAllLocal(){
     saveJSON('habits_templates', templates);
     saveJSON('habits_completions', completions);
@@ -515,11 +648,11 @@
     saveAllLocal();
     pushToCloud();
   }
-
+ 
   const now = new Date();
   const realTodayKey = ORDER[(now.getDay()+6)%7]; // map JS Sunday=0 to our seg-first order
   let selectedDay = realTodayKey;
-
+ 
   // ---- Day tabs ----
   const dayTabsEl = document.getElementById('dayTabs');
   function renderTabs(){
@@ -532,14 +665,14 @@
       dayTabsEl.appendChild(el);
     });
   }
-
+ 
   // ---- Header ----
   function renderHeader(){
     document.getElementById('dayTitle').textContent = DAY_FULL[selectedDay];
     const opts = {day:'2-digit', month:'long'};
     document.getElementById('topDate').textContent = now.toLocaleDateString('pt-BR', opts);
   }
-
+ 
   // ---- Missions (for the currently selected weekday, completion tracked per real date) ----
   // completions are stored keyed by the actual calendar date matching that weekday occurrence closest to today.
   function dateKeyForSelectedDay(){
@@ -550,21 +683,21 @@
     d.setDate(d.getDate() + diff);
     return todayISO(d);
   }
-
+ 
   function renderMissions(){
     const list = templates[selectedDay] || [];
     const key = dateKeyForSelectedDay();
     const state = completions[key] || {};
     const card = document.getElementById('missionCard');
     card.innerHTML = '';
-
+ 
     if(list.length === 0){
       const empty = document.createElement('div');
       empty.className = 'empty-hint';
       empty.textContent = 'Nenhuma missão ainda. Adicione uma abaixo.';
       card.appendChild(empty);
     }
-
+ 
     list.forEach((text, idx)=>{
       const done = !!state[idx];
       const row = document.createElement('div');
@@ -592,7 +725,7 @@
       };
       card.appendChild(row);
     });
-
+ 
     const addRow = document.createElement('div');
     addRow.className = 'add-row';
     addRow.innerHTML = `<input type="text" placeholder="Nova missão..." id="newMissionInput"><button id="newMissionBtn">+</button>`;
@@ -609,7 +742,7 @@
     };
     btn.onclick = addMission;
     input.onkeydown = (e)=>{ if(e.key==='Enter') addMission(); };
-
+ 
     // progress ring + stat
     const total = list.length;
     const doneCount = list.reduce((acc,_,i)=> acc + (state[i]?1:0), 0);
@@ -619,7 +752,7 @@
     const pct = total>0 ? doneCount/total : 0;
     document.getElementById('ringFg').style.strokeDashoffset = circumference * (1-pct);
   }
-
+ 
   // ---- Streak ----
   function computeStreak(){
     let streak = 0;
@@ -637,14 +770,14 @@
     }
     return streak;
   }
-
+ 
   function renderStreakAndQuote(){
     const streak = computeStreak();
     document.getElementById('streakText').textContent = `${streak} dia${streak===1?'':'s'} seguido${streak===1?'':'s'}`;
     const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
     document.getElementById('quoteBox').textContent = QUOTES[dayOfYear % QUOTES.length];
   }
-
+ 
   // ---- Water ----
   function renderWater(){
     const key = todayISO(now);
@@ -671,7 +804,7 @@
     persist();
     renderWater();
   };
-
+ 
   // ---- Running ----
   function renderRuns(){
     const listEl = document.getElementById('runList');
@@ -700,7 +833,7 @@
       };
       listEl.appendChild(item);
     });
-
+ 
     // week summary
     const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
     const weekRuns = runs.filter(r=> new Date(r.date) >= weekAgo);
@@ -717,7 +850,7 @@
     });
     document.getElementById('bestPace').textContent = best === null ? '—' : `${Math.floor(best/60)}:${String(best%60).padStart(2,'0')}`;
   }
-
+ 
   document.getElementById('runAdd').onclick = ()=>{
     const km = document.getElementById('runKm').value;
     const pace = document.getElementById('runPace').value.trim();
@@ -728,8 +861,21 @@
     document.getElementById('runPace').value = '';
     renderRuns();
   };
-
+ 
   // ---- Treino ----
+  function showConfirm(message, onConfirm){
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML = `<div class="confirm-box"><p>${message}</p><div class="confirm-actions">
+      <button class="confirm-btn cancel">Cancelar</button>
+      <button class="confirm-btn danger">Excluir</button>
+    </div></div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.remove(); });
+    overlay.querySelector('.cancel').onclick = ()=> overlay.remove();
+    overlay.querySelector('.danger').onclick = ()=>{ overlay.remove(); onConfirm(); };
+  }
+ 
   function renderTrain(){
     const todayKey = todayISO(now);
     if(!trainLogs[todayKey]) trainLogs[todayKey] = {};
@@ -738,63 +884,81 @@
     const log = trainLogs[todayKey][selectedWorkout];
     const card = document.getElementById('trainCard');
     card.innerHTML = '';
-
+ 
     const tabs = document.createElement('div');
     tabs.className = 'workout-tabs';
-    ['A','B','C'].forEach(w=>{
+    ['A','B','C','D'].forEach(w=>{
       const t = document.createElement('div');
       t.className = 'workout-tab' + (w===selectedWorkout?' active':'');
-      t.textContent = 'Treino ' + w;
+      t.textContent = w;
       t.onclick = ()=>{ selectedWorkout = w; saveJSON('habits_selected_workout', selectedWorkout); renderTrain(); };
       tabs.appendChild(t);
     });
     card.appendChild(tabs);
-
+ 
     if(list.length === 0){
       const empty = document.createElement('div');
       empty.className = 'empty-hint';
       empty.textContent = `Ficha ${selectedWorkout} ainda vazia. Monta ela abaixo.`;
       card.appendChild(empty);
     }
-
+ 
     list.forEach(ex=>{
-      const entry = log[ex.id] || {};
-      const row = document.createElement('div');
-      row.className = 'exercise' + (entry.done ? ' done' : '');
-      row.innerHTML = `
-        <div class="checkbox">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      const setCount = Math.max(1, parseInt(ex.sets) || 1);
+      if(!log[ex.id]) log[ex.id] = { sets: [] };
+      // keep the logged sets array in sync with the exercise's current target set count
+      while(log[ex.id].sets.length < setCount) log[ex.id].sets.push({ weight:null, done:false });
+      if(log[ex.id].sets.length > setCount) log[ex.id].sets.length = setCount;
+      const entrySets = log[ex.id].sets;
+      const doneSets = entrySets.filter(s=>s.done).length;
+      const allDone = doneSets === setCount;
+ 
+      const wrap = document.createElement('div');
+      wrap.className = 'exercise-card' + (allDone ? ' done' : '');
+      wrap.innerHTML = `
+        <div class="exercise-card-head">
+          <div>
+            <div class="exercise-name">${ex.name}</div>
+            <div class="exercise-meta">meta: ${setCount} séries × ${ex.reps} reps</div>
+          </div>
+          <div class="exercise-trash">×</div>
         </div>
-        <div class="exercise-main">
-          <div class="exercise-name">${ex.name}</div>
-          <div class="exercise-meta">${ex.sets}x${ex.reps}</div>
-        </div>
-        <input class="exercise-weight" type="number" step="0.5" min="0" placeholder="kg" value="${entry.weight ?? ''}">
-        <div class="exercise-del">×</div>
+        <div class="sets-list"></div>
+        <div class="exercise-progress"><div class="exercise-progress-fill" style="width:${(doneSets/setCount*100)}%"></div></div>
       `;
-      const cb = row.querySelector('.checkbox');
-      cb.style.cursor = 'pointer';
-      cb.onclick = ()=>{
-        if(!log[ex.id]) log[ex.id] = {};
-        log[ex.id].done = !log[ex.id].done;
-        persist();
-        renderTrain();
+      const setsList = wrap.querySelector('.sets-list');
+      entrySets.forEach((s, i)=>{
+        const setRow = document.createElement('div');
+        setRow.className = 'set-row';
+        setRow.innerHTML = `
+          <div class="set-label">Série ${i+1}</div>
+          <input class="set-weight" type="number" step="0.5" min="0" placeholder="kg" value="${s.weight ?? ''}">
+          <div class="set-check${s.done ? ' done' : ''}">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        `;
+        setRow.querySelector('.set-weight').onchange = (e)=>{
+          const v = parseFloat(e.target.value);
+          entrySets[i].weight = isNaN(v) ? null : v;
+          persist();
+        };
+        setRow.querySelector('.set-check').onclick = ()=>{
+          entrySets[i].done = !entrySets[i].done;
+          persist();
+          renderTrain();
+        };
+        setsList.appendChild(setRow);
+      });
+      wrap.querySelector('.exercise-trash').onclick = ()=>{
+        showConfirm(`Excluir <b>${ex.name}</b> da ficha ${selectedWorkout}? Essa ação não pode ser desfeita.`, ()=>{
+          trainTemplates[selectedWorkout] = trainTemplates[selectedWorkout].filter(x=>x.id !== ex.id);
+          persist();
+          renderTrain();
+        });
       };
-      const weightInput = row.querySelector('.exercise-weight');
-      weightInput.onchange = ()=>{
-        if(!log[ex.id]) log[ex.id] = {};
-        const v = parseFloat(weightInput.value);
-        log[ex.id].weight = isNaN(v) ? undefined : v;
-        persist();
-      };
-      row.querySelector('.exercise-del').onclick = ()=>{
-        trainTemplates[selectedWorkout] = trainTemplates[selectedWorkout].filter(x=>x.id !== ex.id);
-        persist();
-        renderTrain();
-      };
-      card.appendChild(row);
+      card.appendChild(wrap);
     });
-
+ 
     const addBox = document.createElement('div');
     addBox.className = 'add-exercise';
     addBox.innerHTML = `
@@ -816,12 +980,16 @@
       persist();
       renderTrain();
     };
-
+ 
     const total = list.length;
-    const doneCount = list.reduce((acc,ex)=> acc + ((log[ex.id]&&log[ex.id].done)?1:0), 0);
+    const doneCount = list.filter(ex=>{
+      const entry = log[ex.id];
+      const setCount = Math.max(1, parseInt(ex.sets) || 1);
+      return entry && entry.sets.filter(s=>s.done).length === setCount;
+    }).length;
     document.getElementById('trainStat').textContent = `${doneCount}/${total} feito`;
   }
-
+ 
   function renderAll(){
     renderTabs();
     renderHeader();
@@ -831,26 +999,30 @@
     renderRuns();
     renderTrain();
   }
-
-  renderAll(); // render local cache instantly so the UI never feels blank
-
-  // then reconcile with the cloud copy, if reachable
-  (async ()=>{
-    const cloud = await pullFromCloud();
-    if(cloud){
-      templates = cloud.templates || DEFAULT_TEMPLATES;
-      completions = cloud.completions || {};
-      water = cloud.water || {};
-      runs = cloud.runs || [];
-      trainTemplates = cloud.trainTemplates || {A:[],B:[],C:[]};
-      trainLogs = cloud.trainLogs || {};
-      saveAllLocal();
-      renderAll();
-    }else{
-      // no cloud row reachable yet (offline, or first run) — push whatever we have locally
-      pushToCloud();
-    }
-  })();
+ 
+  function startApp(){
+    renderAll(); // render local cache instantly so the UI never feels blank
+ 
+    // then reconcile with the cloud copy, if reachable
+    (async ()=>{
+      const cloud = await pullFromCloud();
+      if(cloud){
+        templates = cloud.templates || DEFAULT_TEMPLATES;
+        completions = cloud.completions || {};
+        water = cloud.water || {};
+        runs = cloud.runs || [];
+        trainTemplates = cloud.trainTemplates || {A:[],B:[],C:[],D:[]};
+        trainLogs = cloud.trainLogs || {};
+        saveAllLocal();
+        renderAll();
+      }else{
+        // no cloud row reachable yet (offline, or first run) — push whatever we have locally
+        pushToCloud();
+      }
+    })();
+  }
+ 
+  initAuth();
 })();
 </script>
 </body>

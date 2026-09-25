@@ -359,6 +359,7 @@
   }
   .auth-box button:disabled{opacity:.6;}
   .auth-msg{margin-top:14px; font-size:12.5px; color:var(--text-dim); min-height:16px;}
+  .auth-toggle{margin-top:6px; font-size:12.5px; color:var(--text-dim); cursor:pointer; text-decoration:underline; text-decoration-color:var(--text-dimmer);}
   .user-bar{
     display:flex; align-items:center; justify-content:space-between;
     font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dimmer);
@@ -373,10 +374,12 @@
 <div id="authScreen" style="display:none;">
   <div class="auth-box">
     <div class="auth-title">HÁBITOS</div>
-    <div class="auth-sub">Entra com seu e-mail pra sincronizar suas missões, água, corridas e treinos.</div>
+    <div class="auth-sub">Entra com seu e-mail e senha pra sincronizar suas missões, água, corridas e treinos.</div>
     <input type="email" id="authEmail" placeholder="seu@email.com" autocomplete="email">
-    <button id="authBtn">Enviar link de acesso</button>
+    <input type="password" id="authPassword" placeholder="senha" autocomplete="current-password">
+    <button id="authBtn">Entrar</button>
     <div class="auth-msg" id="authMsg"></div>
+    <div class="auth-toggle" id="authToggle">Não tem conta? Criar conta</div>
   </div>
 </div>
  
@@ -506,6 +509,7 @@
   }
  
   function showApp(user){
+    if(currentUserId) return;
     currentUserId = user.id;
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('appRoot').style.display = 'block';
@@ -539,17 +543,46 @@
     });
   }
  
+  let authMode = 'signin';
+  function updateAuthUI(){
+    document.getElementById('authBtn').textContent = authMode === 'signin' ? 'Entrar' : 'Criar conta';
+    document.getElementById('authToggle').textContent = authMode === 'signin' ? 'Não tem conta? Criar conta' : 'Já tem conta? Entrar';
+    document.getElementById('authMsg').textContent = '';
+  }
+  document.getElementById('authToggle').onclick = ()=>{
+    authMode = authMode === 'signin' ? 'signup' : 'signin';
+    updateAuthUI();
+  };
+ 
   document.getElementById('authBtn').onclick = async ()=>{
     if(!sb) return;
-    const emailInput = document.getElementById('authEmail');
-    const email = emailInput.value.trim();
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
     const btn = document.getElementById('authBtn');
     const msg = document.getElementById('authMsg');
     if(!email || !email.includes('@')){ msg.textContent = 'Digita um e-mail válido.'; return; }
-    btn.disabled = true; btn.textContent = 'Enviando...';
-    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.origin + window.location.pathname } });
-    btn.disabled = false; btn.textContent = 'Enviar link de acesso';
-    msg.textContent = error ? 'Erro ao enviar. Tenta de novo.' : `Link enviado pra ${email}. Confere sua caixa de entrada.`;
+    if(!password || password.length < 6){ msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = authMode === 'signin' ? 'Entrando...' : 'Criando...';
+ 
+    if(authMode === 'signin'){
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      btn.disabled = false; btn.textContent = originalText;
+      if(error){ msg.textContent = 'E-mail ou senha incorretos.'; return; }
+      if(data.session) showApp(data.session.user);
+    }else{
+      const { data, error } = await sb.auth.signUp({ email, password });
+      btn.disabled = false; btn.textContent = originalText;
+      if(error){ msg.textContent = error.message.includes('already') ? 'Já existe uma conta com esse e-mail.' : 'Não foi possível criar a conta.'; return; }
+      if(data.session){
+        showApp(data.session.user);
+      }else{
+        msg.textContent = 'Conta criada! Confirma pelo e-mail que chegou e depois entra com sua senha.';
+        authMode = 'signin';
+        updateAuthUI();
+      }
+    }
   };
  
   document.getElementById('logoutBtn').onclick = ()=>{

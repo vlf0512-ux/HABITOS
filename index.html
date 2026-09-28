@@ -379,6 +379,26 @@
     margin-bottom:10px;
   }
   .user-bar .logout{color:var(--fire); cursor:pointer; text-decoration:underline;}
+
+  .profile-card{
+    display:flex; gap:14px; align-items:center;
+    background:linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
+    border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:15px 16px; margin-bottom:16px;
+  }
+  .profile-avatar{
+    width:54px; height:54px; border-radius:50%; flex:0 0 auto;
+    background:var(--surface-2); background-size:cover; background-position:center;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif; font-size:21px; color:var(--text-dim);
+    cursor:pointer; border:2px solid var(--fire);
+  }
+  .profile-info{flex:1; min-width:0;}
+  .profile-name{font-size:15px; font-weight:700; cursor:pointer;}
+  .profile-rank{font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700; margin-top:3px; letter-spacing:.03em;}
+  .profile-bar{height:5px; border-radius:3px; background:var(--surface-2); overflow:hidden; margin-top:8px;}
+  .profile-bar-fill{height:100%; border-radius:3px; transition:width .4s ease;}
+  .profile-next{font-size:10.5px; color:var(--text-dimmer); margin-top:4px;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -422,6 +442,9 @@
     <span id="userEmail"></span>
     <span class="logout" id="logoutBtn">sair</span>
   </div>
+
+  <div class="card profile-card" id="profileCard"></div>
+  <input type="file" id="avatarInput" accept="image/*" style="display:none;">
 
   <div class="top-date" id="topDate">— </div>
   <div class="day-title" id="dayTitle">SEGUNDA</div>
@@ -537,6 +560,7 @@
     document.getElementById('appRoot').style.display = 'block';
     document.getElementById('userBar').style.display = 'flex';
     document.getElementById('userEmail').textContent = user.email || '';
+    if(!profile.nickname && user.email) profile.nickname = user.email.split('@')[0];
     startApp();
   }
 
@@ -640,7 +664,7 @@
     flagSyncing('saving');
     syncTimer = setTimeout(async ()=>{
       try{
-        const payload = { templates, completions, water, runs, trainTemplates, trainLogs };
+        const payload = { templates, completions, water, runs, trainTemplates, trainLogs, profile };
         const { error } = await sb.from('habitos_data').upsert({ id: currentUserId, data:payload, updated_at:new Date().toISOString() });
         if(error) throw error;
         flagSyncing('saved');
@@ -694,6 +718,7 @@
     dom:['Planejar a semana','Fazer skincare']
   };
   let templates = loadJSON('habits_templates', DEFAULT_TEMPLATES);
+  let profile = loadJSON('habits_profile', {nickname:'', photo:null});
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
@@ -708,6 +733,7 @@
     saveJSON('habits_runs', runs);
     saveJSON('habits_train_templates', trainTemplates);
     saveJSON('habits_train_logs', trainLogs);
+    saveJSON('habits_profile', profile);
   }
   function persist(){
     saveAllLocal();
@@ -1055,9 +1081,95 @@
     document.getElementById('trainStat').textContent = `${doneCount}/${total} feito`;
   }
 
+  // ---- Perfil e Rank ----
+  const RANKS = [
+    {name:'Bronze',    min:0,    color:'#b08d57'},
+    {name:'Prata',     min:150,  color:'#c9d0da'},
+    {name:'Ouro',      min:400,  color:'#facc15'},
+    {name:'Platina',   min:800,  color:'#67e8f9'},
+    {name:'Diamante',  min:1400, color:'#a855f7'},
+    {name:'Lendário',  min:2200, color:'#f472b6'}
+  ];
+
+  function computeMonthlyXP(){
+    const ym = todayISO(now).slice(0,7);
+    let xp = 0;
+    Object.keys(completions).forEach(d=>{
+      if(!d.startsWith(ym)) return;
+      Object.values(completions[d]).forEach(done=>{ if(done) xp += 10; });
+    });
+    Object.keys(water).forEach(d=>{
+      if(!d.startsWith(ym)) return;
+      xp += (water[d]||0) * 2;
+    });
+    runs.forEach(r=>{ if(r.date && r.date.startsWith(ym)) xp += (parseFloat(r.km)||0) * 15; });
+    Object.keys(trainLogs).forEach(d=>{
+      if(!d.startsWith(ym)) return;
+      Object.values(trainLogs[d]).forEach(exMap=>{
+        Object.values(exMap).forEach(entry=>{
+          if(entry && entry.sets) entry.sets.forEach(s=>{ if(s.done) xp += 5; });
+        });
+      });
+    });
+    return Math.round(xp);
+  }
+
+  function getRank(xp){
+    let current = RANKS[0];
+    RANKS.forEach(r=>{ if(xp >= r.min) current = r; });
+    const next = RANKS[RANKS.indexOf(current)+1] || null;
+    return {current, next};
+  }
+
+  function renderProfile(){
+    const xp = computeMonthlyXP();
+    const {current, next} = getRank(xp);
+    const pct = next ? Math.min(100, ((xp-current.min)/(next.min-current.min))*100) : 100;
+    const card = document.getElementById('profileCard');
+    const initials = (profile.nickname || 'V').trim().charAt(0).toUpperCase();
+    card.innerHTML = `
+      <div class="profile-avatar" id="avatarBtn" style="${profile.photo ? `background-image:url('${profile.photo}')` : ''}">${profile.photo ? '' : initials}</div>
+      <div class="profile-info">
+        <div class="profile-name" id="nicknameDisplay">${profile.nickname || 'Definir nome ✎'}</div>
+        <div class="profile-rank" style="color:${current.color}">${current.name} · ${xp} XP este mês</div>
+        <div class="profile-bar"><div class="profile-bar-fill" style="width:${pct}%; background:${current.color}"></div></div>
+        <div class="profile-next">${next ? `${Math.max(0,next.min-xp)} XP para ${next.name}` : 'Rank máximo alcançado 🏆'}</div>
+      </div>
+    `;
+    document.getElementById('avatarBtn').onclick = ()=> document.getElementById('avatarInput').click();
+    document.getElementById('nicknameDisplay').onclick = ()=>{
+      const val = prompt('Seu nickname:', profile.nickname || '');
+      if(val !== null){ profile.nickname = val.trim().slice(0,24); persist(); renderProfile(); }
+    };
+  }
+
+  document.getElementById('avatarInput').onchange = (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const size = 160;
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const scale = Math.max(size/img.width, size/img.height);
+        const w = img.width*scale, h = img.height*scale;
+        ctx.drawImage(img, (size-w)/2, (size-h)/2, w, h);
+        profile.photo = canvas.toDataURL('image/jpeg', 0.82);
+        persist();
+        renderProfile();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
   function renderAll(){
     renderTabs();
     renderHeader();
+    renderProfile();
     renderMissions();
     renderStreakAndQuote();
     renderWater();
@@ -1078,6 +1190,7 @@
         runs = cloud.runs || [];
         trainTemplates = cloud.trainTemplates || {A:[],B:[],C:[],D:[]};
         trainLogs = cloud.trainLogs || {};
+        profile = cloud.profile || {nickname:'', photo:null};
         saveAllLocal();
         renderAll();
       }else{

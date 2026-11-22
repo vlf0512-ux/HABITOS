@@ -716,7 +716,7 @@
     if(authMode === 'signin'){
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       btn.disabled = false; btn.textContent = originalText;
-      if(error){ msg.textContent = 'Usuário ou senha incorretos.'; return; }
+      if(error){ msg.textContent = /confirm/i.test(error.message) ? 'Conta criada mas ainda não confirmada. Rode o SQL de confirmação no Supabase e tente de novo.' : /fetch|network/i.test(error.message) ? 'Sem conexão com o servidor. Tenta de novo.' : 'Usuário ou senha incorretos.'; return; }
       if(data.session) showApp(data.session.user);
     }else{
       const { data, error } = await sb.auth.signUp({ email, password });

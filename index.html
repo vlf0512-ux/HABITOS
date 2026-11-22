@@ -399,6 +399,46 @@
   .profile-bar{height:5px; border-radius:3px; background:var(--surface-2); overflow:hidden; margin-top:8px;}
   .profile-bar-fill{height:100%; border-radius:3px; transition:width .4s ease;}
   .profile-next{font-size:10.5px; color:var(--text-dimmer); margin-top:4px;}
+  .vhide{display:none !important;}
+  .home-greet{text-align:center; padding:38px 0 28px;}
+  .home-greet small{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--text-dimmer); text-transform:uppercase; margin-bottom:6px;}
+  .home-greet h1{font-family:'Bebas Neue',sans-serif; font-size:52px; line-height:1; margin:0; letter-spacing:.02em; background:linear-gradient(180deg,#fff,#c9cfda); -webkit-background-clip:text; background-clip:text; color:transparent; word-break:break-word;}
+  .menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .menu-item{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 14px; cursor:pointer; transition:transform .1s, border-color .2s;}
+  .menu-item:active{transform:scale(.97); border-color:var(--fire);}
+  .menu-ic{width:30px; height:30px; border-radius:9px; background:var(--fire-soft); color:var(--fire); display:flex; align-items:center; justify-content:center; font-size:15px; margin-bottom:10px;}
+  .menu-item b{display:block; font-family:'Bebas Neue',sans-serif; font-size:22px; font-weight:400; letter-spacing:.04em;}
+  .menu-item span{font-size:11.5px; color:var(--text-dimmer);}
+  .back-bar{display:inline-flex; align-items:center; gap:4px; color:var(--fire); font-family:'JetBrains Mono',monospace; font-size:12px; cursor:pointer; margin-bottom:10px; padding:4px 0;}
+  .fld{width:100%; min-width:0; background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); padding:11px 12px; font-size:14px; font-family:'Inter',sans-serif;}
+  .fld:focus{outline:none; border-color:var(--fire);}
+  .btn-main{width:100%; background:linear-gradient(135deg,var(--fire),#c084fc); color:#1f0a33; border:none; border-radius:var(--radius-sm); padding:12px; font-weight:700; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn-main:disabled{opacity:.6;}
+  .btn-ghost{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border);}
+  .form-col{padding:14px; display:flex; flex-direction:column; gap:8px;}
+  .row2{display:flex; gap:8px;}
+  .post{margin-bottom:14px;}
+  .post img{width:100%; display:block; aspect-ratio:4/5; object-fit:cover; background:var(--surface-2);}
+  .post-body{padding:12px 14px;}
+  .post-top{display:flex; align-items:center; justify-content:space-between;}
+  .post-w{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700;}
+  .post-meta{font-size:11.5px; color:var(--text-dimmer); margin-top:2px;}
+  .fin-sum{display:flex; text-align:center; padding:14px 8px; border-bottom:1px solid var(--border);}
+  .fin-sum div{flex:1; min-width:0;}
+  .fin-sum span{display:block; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px;}
+  .fin-sum small{font-size:10px; color:var(--text-dimmer); text-transform:uppercase; letter-spacing:.06em;}
+  .in{color:#4ade80;} .out{color:#f87171;}
+  .item-row{display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border);}
+  .item-row:last-child{border-bottom:none;}
+  .item-main{flex:1; min-width:0; font-size:14px;}
+  .item-sub{font-size:11px; color:var(--text-dimmer); font-family:'JetBrains Mono',monospace; margin-top:2px;}
+  .seg{display:flex; gap:8px;}
+  .seg div{flex:1; text-align:center; padding:10px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim); font-weight:600; font-size:13px; cursor:pointer;}
+  .seg div.on{background:var(--fire-soft); color:var(--fire); border-color:var(--fire);}
+  .note-ta{width:100%; min-height:90px; resize:vertical; background:transparent; border:none; color:var(--text); font-family:'Inter',sans-serif; font-size:14px; line-height:1.5; padding:14px 16px; display:block;}
+  .note-ta:focus{outline:none;}
+  .toast{position:fixed; left:16px; right:16px; top:calc(14px + env(safe-area-inset-top)); z-index:400; background:var(--surface); border:1px solid var(--fire); border-radius:var(--radius-md); padding:14px 16px; font-size:14px; box-shadow:0 8px 30px rgba(0,0,0,.5);}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -407,17 +447,17 @@
 <div id="authScreen" style="display:none;">
   <div class="auth-box">
     <div class="auth-title">HÁBITOS</div>
-    <div class="auth-sub">Entra com seu e-mail e senha pra sincronizar suas missões, água, corridas e treinos.</div>
+    <div class="auth-sub">Entra com seu usuário e senha pra sincronizar hábitos, treinos, evolução, finanças e notas.</div>
     <button class="oauth-btn" id="googleBtn">
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.71v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.61z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.81 5.96-2.19l-2.9-2.26c-.81.54-1.85.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.9v2.33A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.95 10.69A5.4 5.4 0 013.68 9c0-.59.1-1.16.27-1.69V4.98H.9A9 9 0 000 9c0 1.45.35 2.82.9 4.02l3.05-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.9 4.98l3.05 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
       Continuar com Google
     </button>
-    <button class="oauth-btn" id="appleBtn">
+    <button class="oauth-btn" id="appleBtn" style="display:none;">
       <svg width="16" height="18" viewBox="0 0 14 17" fill="#fff"><path d="M11.62 9.02c-.02-1.9 1.55-2.81 1.62-2.86-.88-1.29-2.26-1.47-2.75-1.49-1.17-.12-2.29.69-2.88.69-.6 0-1.5-.67-2.48-.65-1.27.02-2.45.75-3.1 1.9-1.34 2.32-.34 5.76.96 7.64.64.93 1.4 1.96 2.4 1.93.96-.04 1.32-.62 2.48-.62 1.16 0 1.48.62 2.5.6 1.03-.02 1.68-.94 2.31-1.87.73-1.07 1.03-2.11 1.04-2.16-.02-.01-1.99-.76-2.1-3.11zM9.68 2.6c.53-.64.88-1.53.78-2.42-.76.03-1.68.5-2.23 1.14-.49.56-.92 1.47-.8 2.34.85.07 1.72-.43 2.25-1.06z"/></svg>
       Continuar com Apple
     </button>
     <div class="auth-divider">ou</div>
-    <input type="email" id="authEmail" placeholder="seu@email.com" autocomplete="email">
+    <input type="text" id="authEmail" placeholder="usuário" autocomplete="username" autocapitalize="none" autocorrect="off">
     <input type="password" id="authPassword" placeholder="senha" autocomplete="current-password">
     <button id="authBtn">Entrar</button>
     <div class="auth-msg" id="authMsg"></div>
@@ -445,6 +485,12 @@
 
   <div class="card profile-card" id="profileCard"></div>
   <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+
+  <div id="homeView">
+    <div class="home-greet"><small id="greetSmall"></small><h1 id="greetName"></h1></div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+  <div class="back-bar vhide" id="backBar">‹ Início</div>
 
   <div class="top-date" id="topDate">— </div>
   <div class="day-title" id="dayTitle">SEGUNDA</div>
@@ -512,6 +558,50 @@
   <div class="section">
     <div class="eyebrow"><span>Treino</span><span class="stat" id="trainStat">0/0 feito</span></div>
     <div class="card" id="trainCard"></div>
+  </div>
+
+  <div class="section" id="evoView">
+    <div class="eyebrow"><span>Evolução</span><span class="stat" id="evoStat"></span></div>
+    <div class="card"><div class="form-col">
+      <div class="row2"><input class="fld" type="number" step="0.1" id="evoW" placeholder="Peso (kg)"><input class="fld" type="date" id="evoD"></div>
+      <input class="fld" type="number" step="0.1" id="evoGoal" placeholder="Meu objetivo (kg)">
+      <input class="fld" type="text" id="evoNote" placeholder="Legenda (opcional)">
+      <input type="file" id="evoPhoto" accept="image/*" style="display:none;">
+      <div class="row2"><button class="btn-main btn-ghost" id="evoPick">+ Foto</button><button class="btn-main" id="evoSave">Publicar</button></div>
+    </div></div>
+    <div id="evoFeed" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="section" id="finView">
+    <div class="eyebrow"><span>Finanças</span><span class="stat" id="finMonth"></span></div>
+    <div class="card">
+      <div class="fin-sum"><div><span class="in" id="finIn">0</span><small>Entradas</small></div><div><span class="out" id="finOut">0</span><small>Saídas</small></div><div><span id="finBal">0</span><small>Saldo</small></div></div>
+      <div class="form-col">
+        <div class="seg" id="finType"><div data-t="in" class="on">Entrada</div><div data-t="out">Saída</div></div>
+        <div class="row2"><input class="fld" type="number" step="0.01" id="finVal" placeholder="Valor (R$)"><input class="fld" type="text" id="finDesc" placeholder="Descrição"></div>
+        <button class="btn-main" id="finAdd">Adicionar</button>
+      </div>
+      <div id="finList"></div>
+    </div>
+  </div>
+
+  <div class="section" id="remView">
+    <div class="eyebrow"><span>Lembretes</span><span class="stat" id="remPerm"></span></div>
+    <div class="card">
+      <div class="form-col">
+        <input class="fld" type="text" id="remText" placeholder="O que lembrar?">
+        <input class="fld" type="datetime-local" id="remAt">
+        <button class="btn-main" id="remAdd">Adicionar lembrete</button>
+        <button class="btn-main btn-ghost" id="remPermBtn">Ativar notificações</button>
+      </div>
+      <div id="remList"></div>
+    </div>
+  </div>
+
+  <div class="section" id="notesView">
+    <div class="eyebrow"><span>Notas</span></div>
+    <button class="btn-main" id="noteAdd" style="margin-bottom:12px;">+ Nova nota</button>
+    <div id="noteList"></div>
   </div>
 
 </div>
@@ -612,11 +702,12 @@
 
   document.getElementById('authBtn').onclick = async ()=>{
     if(!sb) return;
-    const email = document.getElementById('authEmail').value.trim();
+    const uname = document.getElementById('authEmail').value.trim().toLowerCase().replace(/[^a-z0-9._-]/g,'');
+    const email = uname + '@habitos.app';
     const password = document.getElementById('authPassword').value;
     const btn = document.getElementById('authBtn');
     const msg = document.getElementById('authMsg');
-    if(!email || !email.includes('@')){ msg.textContent = 'Digita um e-mail válido.'; return; }
+    if(uname.length < 3){ msg.textContent = 'Usuário com no mínimo 3 caracteres (letras, números, ponto, _ ou -).'; return; }
     if(!password || password.length < 6){ msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
     const originalText = btn.textContent;
     btn.disabled = true;
@@ -625,16 +716,16 @@
     if(authMode === 'signin'){
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       btn.disabled = false; btn.textContent = originalText;
-      if(error){ msg.textContent = 'E-mail ou senha incorretos.'; return; }
+      if(error){ msg.textContent = 'Usuário ou senha incorretos.'; return; }
       if(data.session) showApp(data.session.user);
     }else{
       const { data, error } = await sb.auth.signUp({ email, password });
       btn.disabled = false; btn.textContent = originalText;
-      if(error){ msg.textContent = error.message.includes('already') ? 'Já existe uma conta com esse e-mail.' : 'Não foi possível criar a conta.'; return; }
+      if(error){ msg.textContent = error.message.includes('already') ? 'Esse usuário já existe. Escolhe outro.' : 'Não foi possível criar a conta: ' + error.message; return; }
       if(data.session){
         showApp(data.session.user);
       }else{
-        msg.textContent = 'Conta criada! Confirma pelo e-mail que chegou e depois entra com sua senha.';
+        msg.textContent = 'Conta criada, mas o Supabase ainda exige confirmação de e-mail. Desligue "Confirm email" em Authentication > Sign In / Providers > Email.';
         authMode = 'signin';
         updateAuthUI();
       }
@@ -664,7 +755,7 @@
     flagSyncing('saving');
     syncTimer = setTimeout(async ()=>{
       try{
-        const payload = { templates, completions, water, runs, trainTemplates, trainLogs, profile };
+        const payload = { templates, completions, water, runs, trainTemplates, trainLogs, profile, extra };
         const { error } = await sb.from('habitos_data').upsert({ id: currentUserId, data:payload, updated_at:new Date().toISOString() });
         if(error) throw error;
         flagSyncing('saved');
@@ -698,7 +789,7 @@
     "Feito é melhor que perfeito. Marca a missão e segue o jogo."
   ];
 
-  function todayISO(d){ d=d||new Date(); return d.toISOString().slice(0,10); }
+  function todayISO(d){ d=d||new Date(); const z=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()); }
   function loadJSON(key, fallback){
     try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
     catch(e){ return fallback; }
@@ -719,6 +810,8 @@
   };
   let templates = loadJSON('habits_templates', DEFAULT_TEMPLATES);
   let profile = loadJSON('habits_profile', {nickname:'', photo:null});
+  function normExtra(x){ x=x||{}; x.evo=x.evo||{goal:null,posts:[]}; x.evo.posts=x.evo.posts||[]; x.fin=x.fin||[]; x.rem=x.rem||[]; x.notes=x.notes||[]; return x; }
+  let extra = normExtra(loadJSON('habits_extra', {}));
   let completions = loadJSON('habits_completions', {}); // { "2026-07-27": {"0":true} }
   let water = loadJSON('habits_water', {}); // { "2026-07-27": count }
   let runs = loadJSON('habits_runs', []); // [{id,date,km,pace}]
@@ -734,6 +827,7 @@
     saveJSON('habits_train_templates', trainTemplates);
     saveJSON('habits_train_logs', trainLogs);
     saveJSON('habits_profile', profile);
+    saveJSON('habits_extra', extra);
   }
   function persist(){
     saveAllLocal();
@@ -1170,6 +1264,11 @@
     renderTabs();
     renderHeader();
     renderProfile();
+    renderHome();
+    renderEvo();
+    renderFin();
+    renderRem();
+    renderNotes();
     renderMissions();
     renderStreakAndQuote();
     renderWater();
@@ -1177,7 +1276,197 @@
     renderTrain();
   }
 
+  // ---- Navegação, saudação e telas novas ----
+  const byId = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmtDate = d => { const [y,m,dd] = d.split('-'); return `${dd}/${m}/${y}`; };
+  const brl = v => v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  function toast(msg){
+    const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+    t.onclick = ()=> t.remove(); document.body.appendChild(t); setTimeout(()=> t.remove(), 6000);
+  }
+
+  let currentView = 'home', viewsReady = false, VIEWEL = {};
+  const MENU = [
+    ['habitos','HÁBITOS','Missões, água e corrida','✓'],
+    ['treino','TREINO','Fichas A, B, C e D','▲'],
+    ['evolucao','EVOLUÇÃO','Peso e fotos','◔'],
+    ['contas','FINANÇAS','Entradas e saídas','$'],
+    ['lembretes','LEMBRETES','Avisos com data e hora','◷'],
+    ['notas','NOTAS','Suas anotações','✎']
+  ];
+  function setView(v){
+    currentView = v;
+    Object.keys(VIEWEL).forEach(k => VIEWEL[k].forEach(el => el.classList.toggle('vhide', k !== v)));
+    byId('backBar').classList.toggle('vhide', v === 'home');
+    window.scrollTo(0, 0);
+  }
+  function setupViews(){
+    if(viewsReady) return; viewsReady = true;
+    const sec = id => byId(id).closest('.section');
+    const home = byId('homeView');
+    home.appendChild(byId('profileCard')); home.appendChild(byId('userBar'));
+    VIEWEL = {
+      home:[home],
+      habitos:[byId('topDate'), byId('dayTitle'), byId('dayTabs'), document.querySelector('.hero'), sec('missionCard'), sec('dropsRow'), sec('runList')],
+      treino:[sec('trainCard')], evolucao:[byId('evoView')], contas:[byId('finView')], lembretes:[byId('remView')], notas:[byId('notesView')]
+    };
+    const grid = byId('menuGrid');
+    MENU.forEach(([key, name, sub, ic])=>{
+      const b = document.createElement('div'); b.className = 'menu-item';
+      b.innerHTML = `<div class="menu-ic">${ic}</div><b>${name}</b><span>${sub}</span>`;
+      b.onclick = ()=> setView(key); grid.appendChild(b);
+    });
+    byId('backBar').onclick = ()=> setView('home');
+    setView('home');
+    setInterval(checkReminders, 20000);
+  }
+  function renderHome(){
+    const h = new Date().getHours();
+    byId('greetSmall').textContent = (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + ',';
+    byId('greetName').textContent = profile.nickname || 'Bem-vindo';
+  }
+
+  // ---- Evolução ----
+  function shrink(file, max){
+    return new Promise((res, rej)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const s = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = img.width * s; c.height = img.height * s;
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/jpeg', 0.85);
+      };
+      img.onerror = rej; img.src = URL.createObjectURL(file);
+    });
+  }
+  let evoFile = null;
+  byId('evoPick').onclick = ()=> byId('evoPhoto').click();
+  byId('evoPhoto').onchange = e => { evoFile = e.target.files[0] || null; byId('evoPick').textContent = evoFile ? 'Foto ✓' : '+ Foto'; };
+  byId('evoGoal').onchange = e => { const v = parseFloat(e.target.value); extra.evo.goal = isNaN(v) ? null : v; persist(); renderEvo(); };
+  byId('evoSave').onclick = async ()=>{
+    const w = parseFloat(byId('evoW').value); if(isNaN(w)) return;
+    const btn = byId('evoSave'); btn.disabled = true; btn.textContent = 'Publicando...';
+    let path = null;
+    if(evoFile && sb && currentUserId !== 'local'){
+      try{
+        const blob = await shrink(evoFile, 1080);
+        path = `${currentUserId}/${Date.now()}.jpg`;
+        const { error } = await sb.storage.from('evolucao').upload(path, blob, { contentType:'image/jpeg' });
+        if(error) throw error;
+      }catch(err){ path = null; toast('Não consegui enviar a foto. Confere o bucket "evolucao" no Supabase.'); }
+    }
+    extra.evo.posts.push({ id:Date.now(), date:byId('evoD').value || todayISO(), weight:w, note:byId('evoNote').value.trim(), path });
+    evoFile = null; byId('evoW').value = ''; byId('evoNote').value = ''; byId('evoPhoto').value = ''; byId('evoPick').textContent = '+ Foto';
+    btn.disabled = false; btn.textContent = 'Publicar';
+    persist(); renderEvo();
+  };
+  function renderEvo(){
+    const e = extra.evo;
+    if(!byId('evoD').value) byId('evoD').value = todayISO();
+    if(document.activeElement !== byId('evoGoal')) byId('evoGoal').value = e.goal ?? '';
+    const posts = [...e.posts].sort((a,b)=> b.date.localeCompare(a.date) || b.id - a.id);
+    byId('evoStat').textContent = posts[0] ? `${posts[0].weight} kg` + (e.goal ? ` · meta ${e.goal} kg` : '') : '';
+    const feed = byId('evoFeed'); feed.innerHTML = '';
+    posts.forEach((p, i)=>{
+      const prev = posts[i+1];
+      const diff = prev ? p.weight - prev.weight : null;
+      const c = document.createElement('div'); c.className = 'card post';
+      c.innerHTML = `${p.path ? '<img alt="">' : ''}<div class="post-body">
+        <div class="post-top"><div class="post-w">${p.weight} kg</div><div class="exercise-trash">×</div></div>
+        <div class="post-meta">${fmtDate(p.date)}${diff !== null ? ` · ${diff > 0 ? '+' : ''}${diff.toFixed(1)} kg desde o anterior` : ''}</div>
+        ${p.note ? `<div style="margin-top:8px; font-size:13.5px;">${esc(p.note)}</div>` : ''}</div>`;
+      if(p.path && sb){
+        sb.storage.from('evolucao').createSignedUrl(p.path, 3600).then(r=>{ const im = c.querySelector('img'); if(im && r.data) im.src = r.data.signedUrl; });
+      }
+      c.querySelector('.exercise-trash').onclick = ()=> showConfirm('Excluir este registro de evolução?', ()=>{
+        if(p.path && sb) sb.storage.from('evolucao').remove([p.path]);
+        e.posts = e.posts.filter(x => x.id !== p.id); persist(); renderEvo();
+      });
+      feed.appendChild(c);
+    });
+  }
+
+  // ---- Finanças ----
+  let finType = 'in';
+  byId('finType').onclick = e => {
+    const t = e.target.dataset.t; if(!t) return; finType = t;
+    [...byId('finType').children].forEach(c => c.classList.toggle('on', c.dataset.t === t));
+  };
+  byId('finAdd').onclick = ()=>{
+    const v = parseFloat(byId('finVal').value); if(isNaN(v) || v <= 0) return;
+    extra.fin.push({ id:Date.now(), date:todayISO(), type:finType, value:v, desc:byId('finDesc').value.trim() || (finType === 'in' ? 'Entrada' : 'Saída') });
+    byId('finVal').value = ''; byId('finDesc').value = ''; persist(); renderFin();
+  };
+  function renderFin(){
+    const ym = todayISO().slice(0,7);
+    const list = extra.fin.filter(f => f.date.startsWith(ym)).sort((a,b)=> b.id - a.id);
+    const sum = t => list.filter(f => f.type === t).reduce((a,f)=> a + f.value, 0);
+    byId('finIn').textContent = brl(sum('in')); byId('finOut').textContent = brl(sum('out')); byId('finBal').textContent = brl(sum('in') - sum('out'));
+    byId('finMonth').textContent = new Date().toLocaleDateString('pt-BR', {month:'long', year:'numeric'});
+    const box = byId('finList'); box.innerHTML = list.length ? '' : '<div class="empty-hint">Nenhuma movimentação neste mês.</div>';
+    list.forEach(f=>{
+      const r = document.createElement('div'); r.className = 'item-row';
+      r.innerHTML = `<div class="item-main">${esc(f.desc)}<div class="item-sub">${fmtDate(f.date)}</div></div>
+        <div class="${f.type}" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13.5px;">${f.type === 'in' ? '+' : '−'}${brl(f.value)}</div><div class="exercise-trash">×</div>`;
+      r.querySelector('.exercise-trash').onclick = ()=> showConfirm(`Excluir <b>${esc(f.desc)}</b>?`, ()=>{ extra.fin = extra.fin.filter(x => x.id !== f.id); persist(); renderFin(); });
+      box.appendChild(r);
+    });
+  }
+
+  // ---- Lembretes ----
+  byId('remAdd').onclick = ()=>{
+    const t = byId('remText').value.trim(), at = byId('remAt').value; if(!t || !at) return;
+    extra.rem.push({ id:Date.now(), text:t, at, fired:false });
+    byId('remText').value = ''; byId('remAt').value = ''; persist(); renderRem();
+  };
+  byId('remPermBtn').onclick = async ()=>{
+    if(!('Notification' in window)){ toast('Este navegador não suporta notificações.'); return; }
+    await Notification.requestPermission(); renderRem();
+  };
+  function renderRem(){
+    byId('remPerm').textContent = 'Notification' in window ? (Notification.permission === 'granted' ? 'notificações ativas' : 'notificações desligadas') : '';
+    const list = [...extra.rem].sort((a,b)=> a.at.localeCompare(b.at));
+    const box = byId('remList'); box.innerHTML = list.length ? '' : '<div class="empty-hint">Nenhum lembrete.</div>';
+    list.forEach(r=>{
+      const [d, tm] = r.at.split('T');
+      const row = document.createElement('div'); row.className = 'item-row';
+      row.innerHTML = `<div class="item-main" style="${r.fired ? 'color:var(--text-dimmer);' : ''}">${esc(r.text)}<div class="item-sub">${fmtDate(d)} · ${tm}${r.fired ? ' · avisado' : ''}</div></div><div class="exercise-trash">×</div>`;
+      row.querySelector('.exercise-trash').onclick = ()=> showConfirm(`Excluir o lembrete <b>${esc(r.text)}</b>?`, ()=>{ extra.rem = extra.rem.filter(x => x.id !== r.id); persist(); renderRem(); });
+      box.appendChild(row);
+    });
+  }
+  function checkReminders(){
+    let changed = false;
+    extra.rem.forEach(r=>{
+      if(!r.fired && new Date(r.at) <= new Date()){
+        r.fired = true; changed = true; toast('⏰ ' + r.text);
+        try{ if(Notification.permission === 'granted') new Notification('Lembrete', { body:r.text }); }catch(e){}
+      }
+    });
+    if(changed){ persist(); renderRem(); }
+  }
+
+  // ---- Notas ----
+  byId('noteAdd').onclick = ()=>{
+    extra.notes.unshift({ id:Date.now(), text:'', at:todayISO() }); persist(); renderNotes();
+    const f = document.querySelector('.note-ta'); if(f) f.focus();
+  };
+  function renderNotes(){
+    const box = byId('noteList'); box.innerHTML = extra.notes.length ? '' : '<div class="card"><div class="empty-hint">Nenhuma nota ainda.</div></div>';
+    extra.notes.forEach(n=>{
+      const c = document.createElement('div'); c.className = 'card'; c.style.marginBottom = '10px';
+      c.innerHTML = `<textarea class="note-ta" placeholder="Escreva aqui..."></textarea>
+        <div class="item-row" style="border-top:1px solid var(--border); border-bottom:none; padding:8px 16px;"><div class="item-sub" style="flex:1;">${fmtDate(n.at)}</div><div class="exercise-trash">×</div></div>`;
+      const ta = c.querySelector('textarea'); ta.value = n.text;
+      ta.onchange = ()=>{ n.text = ta.value; persist(); };
+      c.querySelector('.exercise-trash').onclick = ()=> showConfirm('Excluir esta nota?', ()=>{ extra.notes = extra.notes.filter(x => x.id !== n.id); persist(); renderNotes(); });
+      box.appendChild(c);
+    });
+  }
+
   function startApp(){
+    setupViews();
     renderAll(); // render local cache instantly so the UI never feels blank
 
     // then reconcile with the cloud copy, if reachable
@@ -1191,8 +1480,10 @@
         trainTemplates = cloud.trainTemplates || {A:[],B:[],C:[],D:[]};
         trainLogs = cloud.trainLogs || {};
         profile = cloud.profile || {nickname:'', photo:null};
+        extra = normExtra(cloud.extra);
         saveAllLocal();
         renderAll();
+        checkReminders();
       }else{
         // no cloud row reachable yet (offline, or first run) — push whatever we have locally
         pushToCloud();

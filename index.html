@@ -358,6 +358,9 @@
     border:none; border-radius:var(--radius-sm); padding:13px; font-weight:700; font-size:14.5px; cursor:pointer;
   }
   .auth-box button:disabled{opacity:.6;}
+  .pw-wrap{position:relative; margin-bottom:10px;}
+  .pw-wrap input{margin-bottom:0; padding-right:84px;}
+  .pw-toggle{position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12px; font-weight:600; color:var(--fire); cursor:pointer; user-select:none;}
   .oauth-btn{
     width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
     background:var(--surface-2); color:var(--text); border:1px solid var(--border);
@@ -458,7 +461,7 @@
     </button>
     <div class="auth-divider">ou</div>
     <input type="text" id="authEmail" placeholder="usuário" autocomplete="username" autocapitalize="none" autocorrect="off">
-    <input type="password" id="authPassword" placeholder="senha" autocomplete="current-password">
+    <div class="pw-wrap"><input type="password" id="authPassword" placeholder="senha" autocomplete="current-password"><span class="pw-toggle" id="pwToggle">Mostrar</span></div>
     <button id="authBtn">Entrar</button>
     <div class="auth-msg" id="authMsg"></div>
     <div class="auth-toggle" id="authToggle">Não tem conta? Criar conta</div>
@@ -650,7 +653,11 @@
     document.getElementById('appRoot').style.display = 'block';
     document.getElementById('userBar').style.display = 'flex';
     document.getElementById('userEmail').textContent = user.email || '';
-    if(!profile.nickname && user.email) profile.nickname = user.email.split('@')[0];
+    if(!profile.nickname){
+      const dn = user.user_metadata && user.user_metadata.display_name;
+      const base = (user.email || '').split('@')[0].replace(/[._-]+/g,' ');
+      profile.nickname = (dn || base).trim().replace(/\b\w/g, c => c.toUpperCase()).slice(0,24);
+    }
     startApp();
   }
 
@@ -699,11 +706,17 @@
   }
   document.getElementById('googleBtn').onclick = ()=> oauthSignIn('google');
   document.getElementById('appleBtn').onclick = ()=> oauthSignIn('apple');
+  document.getElementById('pwToggle').onclick = ()=>{
+    const i = document.getElementById('authPassword'), show = i.type === 'password';
+    i.type = show ? 'text' : 'password';
+    document.getElementById('pwToggle').textContent = show ? 'Ocultar' : 'Mostrar';
+  };
 
   document.getElementById('authBtn').onclick = async ()=>{
     if(!sb) return;
     const uname = document.getElementById('authEmail').value.trim().toLowerCase().replace(/[^a-z0-9._-]/g,'');
     const email = uname + '@habitos.app';
+    const rawName = document.getElementById('authEmail').value.trim();
     const password = document.getElementById('authPassword').value;
     const btn = document.getElementById('authBtn');
     const msg = document.getElementById('authMsg');
@@ -719,7 +732,7 @@
       if(error){ msg.textContent = /confirm/i.test(error.message) ? 'Conta criada mas ainda não confirmada. Rode o SQL de confirmação no Supabase e tente de novo.' : /fetch|network/i.test(error.message) ? 'Sem conexão com o servidor. Tenta de novo.' : 'Usuário ou senha incorretos.'; return; }
       if(data.session) showApp(data.session.user);
     }else{
-      const { data, error } = await sb.auth.signUp({ email, password });
+      const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ display_name: rawName } } });
       btn.disabled = false; btn.textContent = originalText;
       if(error){ msg.textContent = error.message.includes('already') ? 'Esse usuário já existe. Escolhe outro.' : 'Não foi possível criar a conta: ' + error.message; return; }
       if(data.session){
@@ -1224,10 +1237,10 @@
     card.innerHTML = `
       <div class="profile-avatar" id="avatarBtn" style="${profile.photo ? `background-image:url('${profile.photo}')` : ''}">${profile.photo ? '' : initials}</div>
       <div class="profile-info">
-        <div class="profile-name" id="nicknameDisplay">${profile.nickname || 'Definir nome ✎'}</div>
+        <div class="profile-name" id="nicknameDisplay">${profile.nickname || 'Definir nome'}</div>
         <div class="profile-rank" style="color:${current.color}">${current.name} · ${xp} XP este mês</div>
         <div class="profile-bar"><div class="profile-bar-fill" style="width:${pct}%; background:${current.color}"></div></div>
-        <div class="profile-next">${next ? `${Math.max(0,next.min-xp)} XP para ${next.name}` : 'Rank máximo alcançado 🏆'}</div>
+        <div class="profile-next">${next ? `${Math.max(0,next.min-xp)} XP para ${next.name}` : 'Rank máximo alcançado'}</div>
       </div>
     `;
     document.getElementById('avatarBtn').onclick = ()=> document.getElementById('avatarInput').click();
@@ -1288,12 +1301,12 @@
 
   let currentView = 'home', viewsReady = false, VIEWEL = {};
   const MENU = [
-    ['habitos','HÁBITOS','Missões, água e corrida','✓'],
-    ['treino','TREINO','Fichas A, B, C e D','▲'],
-    ['evolucao','EVOLUÇÃO','Peso e fotos','◔'],
-    ['contas','FINANÇAS','Entradas e saídas','$'],
-    ['lembretes','LEMBRETES','Avisos com data e hora','◷'],
-    ['notas','NOTAS','Suas anotações','✎']
+    ['habitos','HÁBITOS','Missões, água e corrida','<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>'],
+    ['treino','TREINO','Fichas A, B, C e D','<path d="M6 8v8M3 10v4M18 8v8M21 10v4M6 12h12"/>'],
+    ['evolucao','EVOLUÇÃO','Peso e fotos','<path d="M3 17l5-5 4 3 8-9"/><path d="M15 6h5v5"/>'],
+    ['contas','FINANÇAS','Entradas e saídas','<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/>'],
+    ['lembretes','LEMBRETES','Avisos com data e hora','<path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 004 0"/>'],
+    ['notas','NOTAS','Suas anotações','<path d="M5 4h11l3 3v13H5z"/><path d="M9 11h6M9 15h6"/>']
   ];
   function setView(v){
     currentView = v;
@@ -1314,9 +1327,14 @@
     const grid = byId('menuGrid');
     MENU.forEach(([key, name, sub, ic])=>{
       const b = document.createElement('div'); b.className = 'menu-item';
-      b.innerHTML = `<div class="menu-ic">${ic}</div><b>${name}</b><span>${sub}</span>`;
+      b.innerHTML = `<div class="menu-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></div><b>${name}</b><span>${sub}</span>`;
       b.onclick = ()=> setView(key); grid.appendChild(b);
     });
+    byId('greetName').style.cursor = 'pointer';
+    byId('greetName').onclick = ()=>{
+      const v = prompt('Como você quer ser chamado?', profile.nickname || '');
+      if(v !== null && v.trim()){ profile.nickname = v.trim().slice(0,24); persist(); renderProfile(); renderHome(); }
+    };
     byId('backBar').onclick = ()=> setView('home');
     setView('home');
     setInterval(checkReminders, 20000);
@@ -1342,7 +1360,7 @@
   }
   let evoFile = null;
   byId('evoPick').onclick = ()=> byId('evoPhoto').click();
-  byId('evoPhoto').onchange = e => { evoFile = e.target.files[0] || null; byId('evoPick').textContent = evoFile ? 'Foto ✓' : '+ Foto'; };
+  byId('evoPhoto').onchange = e => { evoFile = e.target.files[0] || null; byId('evoPick').textContent = evoFile ? 'Foto anexada' : '+ Foto'; };
   byId('evoGoal').onchange = e => { const v = parseFloat(e.target.value); extra.evo.goal = isNaN(v) ? null : v; persist(); renderEvo(); };
   byId('evoSave').onclick = async ()=>{
     const w = parseFloat(byId('evoW').value); if(isNaN(w)) return;
@@ -1440,7 +1458,7 @@
     let changed = false;
     extra.rem.forEach(r=>{
       if(!r.fired && new Date(r.at) <= new Date()){
-        r.fired = true; changed = true; toast('⏰ ' + r.text);
+        r.fired = true; changed = true; toast('Lembrete: ' + r.text);
         try{ if(Notification.permission === 'granted') new Notification('Lembrete', { body:r.text }); }catch(e){}
       }
     });
